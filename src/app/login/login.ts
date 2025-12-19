@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Navbar } from '../shared/navbar/navbar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ export class Login {
    * true  => Register
    * false => Login
    */
+  constructor(private router: Router){}
   @Input() registerMode = false;
 
   // Simple demo models. Replace with your FormGroup or API bindings.
@@ -43,7 +45,7 @@ export class Login {
   }
 
   onLoginSubmit(): void {
-       // TODO: integrate with your API
+    this.router.navigate(['/admin/dashboard']);
     console.log('Login submit', this.loginModel);
   }
 }
