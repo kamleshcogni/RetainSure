@@ -1,9 +1,9 @@
-<section class="bg-light vh-100 ">
+<section class="bg-light min-vh-100 ">
     <app-navbar></app-navbar>
-  <div class="px-4 py-5 d-flex vh-100 align-items-center px-md-5 text-center text-lg-start">
+  <div class="px-4 py-5 content d-flex vh-100 align-items-center px-md-5 text-center text-lg-start">
     <div class="container">
       <div class="row gx-lg-5 align-items-center">
-        <div class="col-lg-6 mb-5 mb-lg-0">
+        <div class="col-lg-6 mt-sm-5 mb-5 mb-lg-0">
           <h1 class="my-5 display-5 text-secondary fw-bold lh-1">
             The Power to Predict <br />
             <span class="" style="color: #3a71cb;">Policy Renewal</span>
@@ -19,7 +19,7 @@
           <div class="card border-0 bg-white ms-5 w-75 mt-5 shadow">
             <div class="card-body py-5 px-md-5">
 
-              <form *ngIf="registerMode" (ngSubmit)="onRegisterSubmit()" class="needs-validation small text-secondary" novalidate>
+              <form *ngIf="registerMode" (ngSubmit)="onRegisterSubmit()" class="needs-validation small text-secondary" [formGroup]="registerModel">
               
                 <h5 class="mb-4 text-center">Create your account</h5>
 
@@ -28,23 +28,20 @@
                     <label for="regName" class="form-label">Name</label>
                     <input
                       type="text"
-                      id="regName"
                       class="form-control"
-                      [(ngModel)]="registerModel.name"
-                      name="regName"
+                      formControlName="name"
                       required
                     />
                     <div class="invalid-feedback">Please enter your name.</div>
                   </div>
 
                   <div class="col-md-6 mb-3">
-                    <label for="regContact" class="form-label">Contact</label>
+                    <label for="regContact" class="form-label">Contact No.</label>
                     <input
                       type="text"
-                      id="regContact"
                       class="form-control"
-                      [(ngModel)]="registerModel.contact"
-                      name="regContact"
+                      formControlName="contact"
+                      required
                     />
                   </div>
                 </div>
@@ -53,10 +50,8 @@
                   <label for="regEmail" class="form-label">Email address</label>
                   <input
                     type="email"
-                    id="regEmail"
                     class="form-control"
-                    [(ngModel)]="registerModel.email"
-                    name="regEmail"
+                    formControlName="email"
                     required
                   />
                   <div class="invalid-feedback">Please enter a valid email.</div>
@@ -66,10 +61,8 @@
                   <label for="regPassword" class="form-label">Password</label>
                   <input
                     type="password"
-                    id="regPassword"
                     class="form-control"
-                    [(ngModel)]="registerModel.password"
-                    name="regPassword"
+                    formControlName="password"
                     required
                     minlength="6"
                   />
@@ -80,16 +73,17 @@
                   <input
                     class="form-check-input me-2"
                     type="checkbox"
-                    id="regTNC"
-                    [(ngModel)]="registerModel.tnc"
-                    name="regTNC"
+                    formControlName="tnc"
                   />
                   <label class="form-check-label" for="regTNC">
                     Agree to our Terms and Conditions.
                   </label>
                 </div>
-
-                <button type="submit" class="btn fw-medium py-2 btn-submit text-sm text-white w-100">
+                
+                <div class="invalid-feedback d-block" *ngIf="registerModel.get('tnc')?.invalid && registerModel.get('tnc')?.touched">
+                  You must agree to the Terms and Conditions.
+                </div>
+                <button type="submit" class="btn fw-medium py-2 btn-submit text-sm text-white w-100" [disabled]="registerModel.invalid">
                   SIGN UP
                 </button>
                 <div class="text-center mt-3">
@@ -99,7 +93,7 @@
                 </div>
               </form>
 
-              <form *ngIf="!registerMode" (ngSubmit)="onLoginSubmit()" class="needs-validation small text-secondary" novalidate>
+              <form *ngIf="!registerMode" (ngSubmit)="onLoginSubmit()" class="needs-validation small text-secondary" [formGroup]="loginModel">
                 
                 <h5 class="mb-4 text-center">Welcome back!</h5>
 
@@ -107,10 +101,8 @@
                   <label for="loginEmail" class="form-label">Email address</label>
                   <input
                     type="email"
-                    id="loginEmail"
                     class="form-control"
-                    [(ngModel)]="loginModel.email"
-                    name="loginEmail"
+                    formControlName="email"
                     required
                   />
                   <div class="invalid-feedback">Please enter a valid email.</div>
@@ -122,14 +114,14 @@
                     type="password"
                     id="loginPassword"
                     class="form-control"
-                    [(ngModel)]="loginModel.password"
+                    formControlName="password"
                     name="loginPassword"
                     required
                   />
                   <div class="invalid-feedback">Please enter your password.</div>
                 </div>
 
-                <button type="submit" class="btn btn-submit py-2 fw-medium text-white w-100"  style="background-color: #3a71cb;">
+                <button type="submit" class="btn btn-submit py-2 fw-medium text-white w-100"  style="background-color: #3a71cb;" [disabled]=""loginModel.invalid>
                   LOGIN
                 </button>
 

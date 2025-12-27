@@ -6,14 +6,15 @@ import { AdminEngage } from './features/admin/admin-engage/admin-engage';
 import { AdminCampaigns } from './features/admin/admin-campaigns/admin-campaigns';
 import { AdminAnalytics } from './features/admin/admin-analytics/admin-analytics';
 import { AdminSettings } from './features/admin/admin-settings/admin-settings';
+import { RoleGuard } from './core/auth/role.guard';
 
 export const routes: Routes = [
-    {path: 'admin/dashboard', component:AdminDashboard},
-    {path: 'admin/risk', component:AdminRisk},
-    {path: 'admin/engage', component:AdminEngage},
-    {path: 'admin/campaigns', component:AdminCampaigns},
-    {path: 'admin/analytics', component:AdminAnalytics},
-    {path: 'admin/settings', component:AdminSettings},
+    {path: 'admin/dashboard', component:AdminDashboard, canActivate: [RoleGuard], data: {roles: ['admin']}},
+    {path: 'admin/risk', component:AdminRisk, canActivate: [RoleGuard], data: {roles: ['admin']}},
+    {path: 'admin/engage', component:AdminEngage, canActivate: [RoleGuard], data: {roles: ['admin']}},
+    {path: 'admin/campaigns', component:AdminCampaigns, canActivate: [RoleGuard], data: {roles: ['admin']}},
+    {path: 'admin/analytics', component:AdminAnalytics, canActivate: [RoleGuard], data: {roles: ['admin']}},
+    {path: 'admin/settings', component:AdminSettings, canActivate: [RoleGuard], data: {roles: ['admin']}},
     {path: '', component:Login},
     {path: '**', redirectTo:''}
 ];

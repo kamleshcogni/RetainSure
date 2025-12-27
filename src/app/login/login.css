@@ -22,3 +22,8 @@
 .toggle-btn:hover{
     color: #2b569c;
 }
+@media (max-width: 992px){
+  .content{
+    margin-top: 260px;
+  }
+}
