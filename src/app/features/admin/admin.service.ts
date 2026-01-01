@@ -10,14 +10,20 @@ import { map, delay } from 'rxjs/operators';
 
 // Customer entity
 export interface Customer {
+ 
   cust_id: number;
+  // optional primary policy category (convenience on Customer records in mock data)
+  category?: Policy['category'];
   policy_id?: number;          // optional link to a primary policy
   name: string;
   email: string;
   phone: string;
+  risk_score?: number;       // 0–100
   password: string;            // mock only; DO NOT store passwords in frontend for real apps
   created_at: string;          // ISO date string
-  modified_at: string;         // ISO date string
+  modified_at: string;
+
+         // ISO date string
 }
 
 // Policy entity
@@ -39,7 +45,8 @@ export interface Policy {
 export interface RiskItem {
   cust_id: number;
   policy_id: number;
-  category: Policy['category'];
+  //category: Policy['category'];
+  category: 'HEALTH' | 'MOTOR' | 'LIFE' | 'TRAVEL';
   cust_name: string;
   risk_score: number;          // 0–100
   renewal_date: string;
@@ -54,6 +61,7 @@ export interface Reminder {
   category: Policy['category'];
   date_sent: string;
   mode: 'EMAIL' | 'SMS' | 'WHATSAPP' | 'CALL';
+  risk_score?: number;      // 0–100 (enriched field)
   trigger: string;             // message content
   status: 'SENT' | 'RESPONDED' | 'FAILED' | 'SCHEDULED';
 }
@@ -196,17 +204,17 @@ export class MockDataService {
   private reminders: Reminder[] = [
     {
       cust_id: 1001, policy_id: 5001, category: 'HEALTH',
-      date_sent: '2025-12-20', mode: 'EMAIL',
+      date_sent: '2025-12-20', mode: 'EMAIL', risk_score: 35,
       trigger: 'Your Health policy renews on 31 Dec', status: 'SENT'
     },
     {
       cust_id: 1002, policy_id: 5002, category: 'MOTOR',
-      date_sent: '2025-11-25', mode: 'SMS',
+      date_sent: '2025-11-25', mode: 'SMS',risk_score:72,
       trigger: 'Motor policy renewal reminder', status: 'RESPONDED'
     },
     {
       cust_id: 1003, policy_id: 5004, category: 'TRAVEL',
-      date_sent: '2025-12-22', mode: 'WHATSAPP',
+      date_sent: '2025-12-22', mode: 'WHATSAPP',risk_score:55,
       trigger: 'Travel policy upcoming renewal', status: 'SCHEDULED'
     }
   ];
@@ -297,6 +305,12 @@ export class MockDataService {
   listRemindersByCustomer(custId: number): Observable<Reminder[]> {
     return of(this.reminders.filter(r => r.cust_id === custId)).pipe(delay(150));
   }
+  
+createReminder(rem: Reminder): Observable<Reminder> {
+  this.reminders.push({ ...rem });
+  return of(rem).pipe(delay(150));
+}
+
 
   // --- Campaigns ---
   listCampaigns(): Observable<Campaign[]> {

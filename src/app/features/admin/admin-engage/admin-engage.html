@@ -1,1 +1,166 @@
-<app-sidebar></app-sidebar>
+ <app-sidebar></app-sidebar>
+
+<div class="page">
+
+  <!-- Header -->
+  <header class="header">
+    <h2>Admin – Reminders</h2>
+  </header>
+
+  <!-- Filter & list -->
+  <section class="card">
+    <div class="list-toolbar">
+      <label>
+        search by Customer ID
+        <input type="number" [(ngModel)]="custIdFilter" placeholder="e.g. 1001" />
+      </label>
+      <div class="actions">
+        <button class="ghost" (click)="filterByCustomer()">Apply</button>
+        <!-- <button class="ghost" (click)="loadAll()">Clear</button> -->
+      </div>
+    </div>
+
+    <div *ngIf="(reminders$ | async) as reminders; else loading">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Policy</th>
+            <th>Customer</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Mode</th>
+            <th>Risk score</th>
+            <th>Status</th>
+            <th>Trigger</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of reminders">
+            <td>{{ r.policy_id }}</td>
+            <td>{{ r.cust_id }}</td>
+            <td>{{ r.category }}</td>
+            <td>{{ r.date_sent }}</td>
+            <td>{{ r.mode }}</td>
+            <td>
+              <span [class.high]="(getRiskForCust(r.cust_id) ?? 0) >= bulkForm.riskThreshold">
+                {{ getRiskForCust(r.cust_id) ?? '-' }}
+              </span>
+            </td>
+            <td>{{ r.status }}</td>
+            <td>{{ r.trigger }}</td>
+          </tr>
+          <tr *ngIf="!reminders.length">
+            <td colspan="8" class="empty">No reminders found.</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #loading>
+      <p>Loading reminders…</p>
+    </ng-template>
+  </section>
+
+  <!-- Create for specific customer -->
+  <section class="card">
+    <h3>Create Reminder – Specific Customer</h3>
+
+    <div class="grid">
+      <label>
+        Customer ID
+        <input type="number" [(ngModel)]="singleForm.cust_id" placeholder="e.g. 1001" />
+      </label>
+
+      <label>
+        Policy ID
+        <input type="number" [(ngModel)]="singleForm.policy_id" placeholder="e.g. 5001" />
+      </label>
+
+      <label>
+        Category
+        <select [(ngModel)]="singleForm.category">
+          <option value="HEALTH">HEALTH</option>
+          <option value="MOTOR">MOTOR</option>
+        </select>
+      </label>
+
+      <label>
+        Date (YYYY-MM-DD)
+        <input type="date" [(ngModel)]="singleForm.date_sent" />
+      </label>
+
+      <label>
+        Mode
+        <select [(ngModel)]="singleForm.mode">
+          <option value="EMAIL">EMAIL</option>
+          <option value="SMS">SMS</option>
+        </select>
+      </label>
+
+      <label class="full">
+        Trigger (message)
+        <input type="text" [(ngModel)]="singleForm.trigger" placeholder="Reminder message..." />
+      </label>
+    </div>
+
+    <div class="actions">
+      <button class="primary" (click)="createForCustomer()" [disabled]="creating">
+        {{ creating ? 'Creating…' : 'Create Reminder' }}
+      </button>
+      <button class="ghost" (click)="resetSingleForm()">Reset</button>
+    </div>
+
+   
+  </section>
+
+  <!-- Bulk create by risk score -->
+  <section class="card">
+    <h3>Create Reminders – Bulk by Risk Score</h3>
+
+    <div class="grid">
+      <label>
+        Risk Threshold
+        <input type="number" min="0" max="100" [(ngModel)]="bulkForm.riskThreshold" />
+      </label>
+
+      <label>
+        Category
+        <select [(ngModel)]="bulkForm.category">
+          <option value="ANY">ANY</option>
+          <option value="HEALTH">HEALTH</option>
+          <option value="MOTOR">MOTOR</option>
+        </select>
+      </label>
+
+      <label>
+        Date (YYYY-MM-DD)
+        <input type="date" [(ngModel)]="bulkForm.date_sent" />
+      </label>
+
+      <label>
+        Mode
+        <select [(ngModel)]="bulkForm.mode">
+          <option value="EMAIL">EMAIL</option>
+          <option value="SMS">SMS</option>
+        </select>
+      </label>
+
+      <label class="full">
+        Trigger (message)
+        <input type="text" [(ngModel)]="bulkForm.trigger" placeholder="Bulk reminder message..." />
+      </label>
+    </div>
+
+    <div class="actions">
+      <button class="primary" (click)="bulkCreateByRiskScore()" [disabled]="bulkCreating">
+        {{ bulkCreating ? 'Creating…' : 'Create for Filtered Customers' }}
+      </button>
+    </div>
+
+    <div class="summary" *ngIf="lastBulkCreatedCount !== null">
+      Created <strong>{{ lastBulkCreatedCount }}</strong> reminders in bulk.
+    </div>
+  </section>
+
+</div>

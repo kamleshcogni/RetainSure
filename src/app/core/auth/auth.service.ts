@@ -30,10 +30,10 @@ export class AuthService{
             name:'Hari'
         },
         {
-            email:'tejal@example.com',
+            email:'sejal@example.com',
             password:'password',
             role:'customer',
-            name:'Tejal'
+            name:'sejal'
         },
         {
             email:'sruthi@example.com',
