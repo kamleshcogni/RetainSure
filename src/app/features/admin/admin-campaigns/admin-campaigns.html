@@ -1,1 +1,182 @@
-<app-sidebar></app-sidebar>>
+
+<!-- src/app/admin/campaigns/admin-campaigns.html -->
+<app-sidebar></app-sidebar>
+<div class="rs-page">
+
+  <!-- NAV BAR (Sky Blue) -->
+  <div class="rs-navbar">
+    <div class="container d-flex justify-content-between align-items-center">
+      <div class="nav-left d-flex align-items-center gap-3">
+        <div class="nav-brand d-flex align-items-center gap-2">
+        </div>
+      </div>
+
+      <div class="nav-right d-flex align-items-center gap-3">
+        <div class="user-meta text-end">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLUE BAND A: Overview -->
+  <div class="blue-band band-a">
+    <div class="rs-container container">
+      <div class="container-title d-flex align-items-center justify-content-between">
+        <span>Overview</span>
+      </div>
+
+      <div class="table-like">
+        <div class="row g-3">
+          <div class="cell col-12 col-md-4">
+            <div class="metric-label">Active Campaigns</div>
+            <div class="metric-value">{{ metrics?.activeCampaigns }}</div>
+            <div class="metric-sub up">+1 this month</div>
+          </div>
+          <div class="cell col-12 col-md-4">
+            <div class="metric-label">Avg. Conversion Rate</div>
+            <div class="metric-value">{{ metrics?.avgConversionRate }}%</div>
+            <div class="metric-sub up">+2.1% vs last month</div>
+          </div>
+          <div class="cell col-12 col-md-4">
+            <div class="metric-label">Avg. ROI</div>
+            <div class="metric-value">{{ metrics?.avgROI }}%</div>
+            <div class="metric-sub">Stable</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLUE BAND B: Create / Edit Campaign -->
+  <div class="blue-band band-b">
+    <div class="rs-container rs-create container">
+      <div class="container-title d-flex align-items-center justify-content-between">
+        <span>{{ isEditing() ? 'Edit Campaign' : 'Create New Campaign' }}</span>
+        <span class="edit-badge" *ngIf="isEditing()">Editing: {{ campaigns[editingIndex!]?.campaign_id }}</span>
+      </div>
+
+      <form [formGroup]="form" class="form-grid" novalidate>
+        <div class="field span-2">
+          <label class="form-label">Campaign Name</label>
+          <input
+            class="rs-input form-control"
+            type="text"
+            formControlName="name"
+            placeholder="e.g., Q4 Customer Appreciation"
+          />
+          <div class="rs-error" *ngIf="form.controls['name'].touched && form.controls['name'].invalid">
+            Name is required (min 3 characters)
+          </div>
+        </div>
+
+        <div class="field span-2">
+          <label class="form-label">Discount</label>
+          <input
+            class="rs-input form-control"
+            type="text"
+            formControlName="offerDetails"
+            placeholder="10% Discount on Renewal"
+          />
+        </div>
+
+        <div class="field">
+          <label class="form-label">Target Segment</label>
+          <select class="rs-input form-select" formControlName="targetSegment">
+            <option *ngFor="let s of segments" [value]="s">{{ s }}</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="form-label">Start Date</label>
+          <input class="rs-input form-control" type="date" formControlName="startDate" />
+        </div>
+
+        <div class="field">
+          <label class="form-label">End Date</label>
+          <input class="rs-input form-control" type="date" formControlName="endDate" />
+        </div>
+
+        <div class="field" *ngIf="isEditing()">
+          <label class="form-label">Status</label>
+          <select class="rs-input form-select" formControlName="status">
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="SCHEDULED">SCHEDULED</option>
+            <option value="COMPLETED">COMPLETED</option>
+          </select>
+        </div>
+
+        <div class="actions span-2 d-flex gap-2">
+          <ng-container *ngIf="!isEditing(); else editActions">
+            <button type="button" class="rs-btn btn btn-outline-secondary" (click)="saveDraft()">Save Draft</button>
+            <button type="button" class="rs-btn rs-btn-primary btn btn-primary" (click)="launchCampaign()">Launch Campaign</button>
+          </ng-container>
+          <ng-template #editActions>
+            <button type="button" class="rs-btn btn btn-outline-secondary" (click)="cancelEdit()">Cancel</button>
+            <button type="button" class="rs-btn rs-btn-primary btn btn-primary" (click)="saveUpdate()">Update</button>
+          </ng-template>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- BLUE BAND C: Campaigns (Module Fields) -->
+  <div class="blue-band band-c">
+    <div class="rs-container container">
+      <div class="container-title d-flex align-items-center justify-content-between">
+        <span>Campaigns</span>
+        <button type="button" class="rs-btn rs-btn-soft btn btn-light">View All</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="rs-grid table align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Campaign ID</th>
+              <th>Campaign Name</th>
+              <th>Status</th>
+              <th>Target</th>
+              <th>Discount</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Created</th>
+              <th>Modified</th>
+              <th class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of campaigns; let i = index">
+              <td class="fw-semibold">{{ c.campaign_id }}</td>
+              <td class="cell-name fw-semibold">{{ c.campaign_name }}</td>
+              <td>
+                <span class="rs-chip" [ngClass]="statusClass(c.status)">{{ c.status }}</span>
+              </td>
+              <td>{{ c.target }}</td>
+              <td>{{ c.discount }}</td>
+              <td>{{ c.start_date ? (toInputDate(c.start_date)) : '-' }}</td>
+              <td>{{ c.end_date ? (toInputDate(c.end_date)) : '-' }}</td>
+              <td>{{ c.created_at ? (toInputDate(c.created_at)) : '-' }}</td>
+              <td>{{ c.modified_at ? (toInputDate(c.modified_at)) : '-' }}</td>
+              <td class="col-actions">
+                <button
+                  type="button"
+                  class="rs-btn btn btn-outline-secondary me-2"
+                  *ngIf="c.status !== 'COMPLETED'"
+                  (click)="editCampaign(i)"
+                >
+                  Edit
+                </button>
+                <button type="button" class="rs-btn btn btn-outline-secondary me-2" *ngIf="c.status === 'COMPLETED'">
+                  Report
+                </button>
+                <button type="button" class="rs-btn rs-btn-soft btn btn-light">Details</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+``
