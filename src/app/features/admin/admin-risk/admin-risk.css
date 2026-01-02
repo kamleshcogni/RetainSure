@@ -1,0 +1,207 @@
+ 
+/* ========= Root & Globals ========= */
+:root {
+  --rs-blue: #0d6efd;
+  --rs-grey: #f7f9fc;
+  --rs-dark: #1f2a37;
+  --rs-border: #e5e7eb;
+  --rs-danger: #dc3545;
+  --rs-warning: #fd7e14;
+  --rs-success: #198754;
+  --rs-shadow: 0 6px 18px rgba(19, 33, 68, 0.08);
+  --rs-shadow-hover: 0 12px 24px rgba(19, 33, 68, 0.12);
+  --sidebar-bg: linear-gradient(180deg, #0d6efd 0%, #0a58ca 100%);
+}
+ 
+/* ========= Layout ========= */
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 260px;
+  background: var(--sidebar-bg);
+  color: #fff;
+  padding: 16px 12px;
+  box-shadow: var(--rs-shadow);
+  z-index: 1030;
+  display: flex;
+  flex-direction: column;
+}
+ 
+.main-content {
+  margin-left: 280px;      /* content adjusts with left margin */
+  min-height: 100vh;
+  background: var(--rs-grey);
+  display: flex;
+  flex-direction: column;
+  
+}
+ 
+.container-fluid {
+  padding: 16px;
+}
+ 
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  border-bottom: 1px solid var(--rs-border);
+  background: #fff;
+}
+ 
+/* ========= Sidebar ========= */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 8px 6px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+}
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.25);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+.brand-text {
+  font-weight: 600;
+}
+.nav-link {
+  display: block;
+  color: rgba(255, 255, 255, 0.92);
+  border-radius: 8px;
+  padding: 10px 12px;
+  text-decoration: none;
+  transition: background-color 120ms ease;
+}
+.nav-link:hover,
+.nav-link.active {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+ 
+/* ========= Section Titles ========= */
+.section-title {
+  font-weight: 600;
+  color: var(--rs-dark);
+  letter-spacing: 0.2px;
+  margin: 4px 0 8px;
+}
+ 
+/* ========= Cards ========= */
+.dashboard-card,
+.table-card {
+  border: 1px solid var(--rs-border);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--rs-shadow);
+  transition: box-shadow 160ms ease, border-color 160ms ease;
+}
+.dashboard-card:hover,
+.table-card:hover {
+  box-shadow: var(--rs-shadow-hover);
+  border-color: #d1d5db;
+}
+.dashboard-card .card-title {
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+.dashboard-card .card-count {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+ 
+/* ========= Filters ========= */
+.filter-group .form-select {
+  min-width: 160px;
+}
+ 
+/* ========= Table ========= */
+.table-card table thead th {
+  background: #f0f4f8;
+  border-bottom: 1px solid var(--rs-border);
+  font-weight: 600;
+  color: #334155;
+}
+.table-card .table tbody tr:hover {
+  background-color: #f9fbff;
+}
+.score {
+  font-weight: 600;
+  color: #0f172a;
+}
+ 
+/* Risk level badges */
+.badge-high {
+  background: var(--rs-danger);
+  color: #fff;
+}
+.badge-medium {
+  background: var(--rs-warning);
+  color: #212529;
+}
+.badge-low {
+  background: var(--rs-success);
+  color: #fff;
+}
+ 
+/* Status badge override (Bootstrap utility) */
+.status-badge {
+  color: #fff;
+}
+ 
+/* ========= Row Highlights ========= */
+/* High-risk rows get a subtle red-tint background */
+.row-high {
+  background: rgba(220, 53, 69, 0.06);
+}
+ 
+/* Flagged rows get a left border accent */
+.row-flagged {
+  border-left: 4px solid var(--rs-blue);
+}
+ 
+/* Flag button */
+.flag-btn {
+  border: 1px solid var(--rs-border);
+  background: #fff;
+  border-radius: 8px;
+  padding: 4px 10px;
+  transition: box-shadow 160ms ease, border-color 160ms ease, background-color 160ms ease;
+}
+.flag-btn:hover {
+  box-shadow: 0 6px 14px rgba(13, 110, 253, 0.22);
+  border-color: var(--rs-blue);
+  background: rgba(13, 110, 253, 0.06);
+}
+.flag-btn.flagged {
+  border-color: var(--rs-blue);
+  background: rgba(13, 110, 253, 0.08);
+}
+ 
+/* Truncation utility */
+.text-truncate {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+ 
+/* ========= Responsive ========= */
+@media (max-width: 992px) {
+  .filter-group .form-select {
+    min-width: 140px;
+  }
+}
+@media (max-width: 768px) {
+  .filter-group .form-select {
+    min-width: 120px;
+  }
+}
+ 
+ 

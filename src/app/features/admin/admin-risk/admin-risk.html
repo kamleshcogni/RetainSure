@@ -1,1 +1,176 @@
 <app-sidebar></app-sidebar>
+ 
+ 
+<!-- Optional fixed left sidebar for layout demo -->
+<!-- <aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo">RM</div>
+    <div class="brand-text">Risk Manager</div>
+  </div>
+  <nav class="nav flex-column">
+    <a href="#" class="nav-link active">Dashboard</a>
+    <a href="#" class="nav-link">Policies</a>
+    <a href="#" class="nav-link">Customers</a>
+    <a href="#" class="nav-link">Campaigns</a>
+    <a href="#" class="nav-link">Reminders</a>
+    <a href="#" class="nav-link">Reports</a>
+    <a href="#" class="nav-link">Settings</a>
+  </nav>
+</aside> -->
+ 
+<!-- Main content (adjusts with left margin) -->
+<div class="main-content">
+ 
+  <header class="topbar d-flex align-items-center justify-content-between px-3 py-2">
+    <h5 class="mb-0 fw-semibold">Risk Management Dashboard</h5>
+    <div class="text-muted small">Insurance Admin</div>
+  </header>
+ 
+  <div class="container-fluid py-3">
+    <!-- ===== SECTION 1: Summary Cards ===== -->
+    <div class="row g-3">
+      <div class="col-12">
+        <h6 class="section-title">Summary</h6>
+      </div>
+ 
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="card dashboard-card">
+          <div class="card-body">
+            <div class="card-title">Total High Risk</div>
+            <div class="card-count text-danger">{{ totalHigh }}</div>
+            <div class="text-muted small">Customers needing immediate attention</div>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="card dashboard-card">
+          <div class="card-body">
+            <div class="card-title">Total Medium Risk</div>
+            <div class="card-count text-warning">{{ totalMedium }}</div>
+            <div class="text-muted small">Monitor and follow up</div>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="card dashboard-card">
+          <div class="card-body">
+            <div class="card-title">Total Low Risk</div>
+            <div class="card-count text-success">{{ totalLow }}</div>
+            <div class="text-muted small">Likely to renew</div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ===== SECTION 2: Filters ===== -->
+    <div class="row g-3 mt-2">
+      <div class="col-12">
+        <h6 class="section-title">Filters</h6>
+      </div>
+ 
+      <div class="col-12 d-flex flex-wrap align-items-center gap-3">
+        <!-- Risk Level -->
+        <div class="filter-group">
+          <label class="form-label mb-1">Risk Level</label>
+          <select class="form-select form-select-sm w-auto"
+                  [(ngModel)]="riskLevelFilter"
+                  (ngModelChange)="onRiskLevelChange(riskLevelFilter)">
+            <option value="All">All</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+ 
+        <!-- Policy Type -->
+        <div class="filter-group">
+          <label class="form-label mb-1">Policy Type</label>
+          <select class="form-select form-select-sm w-auto"
+                  [(ngModel)]="policyTypeFilter"
+                  (ngModelChange)="onPolicyTypeChange(policyTypeFilter)">
+            <option value="All">All</option>
+            <option value="Motor">Motor</option>
+            <option value="Health">Health</option>
+          </select>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- ===== SECTION 3: Risk Table ===== -->
+    <div class="row g-3 mt-2">
+      <div class="col-12">
+        <h6 class="section-title">Risk Table</h6>
+        <div class="card table-card">
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Customer ID</th>
+                  <th>Customer Name</th>
+                  <th>Policy ID</th>
+                  <th>Policy Type</th>
+                  <th>Risk Score</th>
+                  <th>Risk Level</th>
+                  <th>Renewal Probability (%)</th>
+                  <th>Renewal Date</th>
+                  <th>Renewal Status</th>
+                  <th class="text-end">Flag</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of filteredRisks" [ngClass]="rowClass(row)">
+                  <td class="text-nowrap">{{ row.customerId }}</td>
+                  <td class="text-truncate">{{ row.customerName }}</td>
+                  <td class="text-nowrap">{{ row.policyId }}</td>
+                  <td>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ row.policyType }}</span>
+                  </td>
+                  <td>
+                    <span class="score">{{ row.riskScore }}</span>
+                  </td>
+                  <td>
+                    <span class="badge" [ngClass]="riskBadgeClass(row.riskLevel)">
+                      {{ row.riskLevel }}
+                    </span>
+                  </td>
+                  <td>{{ row.renewalProbability }}%</td>
+                  <td>{{ row.renewalDate | date:'mediumDate' }}</td>
+                  <td>
+                    <span class="badge status-badge"
+                          [class.bg-secondary]="row.renewalStatus === 'Pending'"
+                          [class.bg-success]="row.renewalStatus === 'Renewed'"
+                          [class.bg-danger]="row.renewalStatus === 'Expired'">
+                      {{ row.renewalStatus }}
+                    </span>
+                  </td>
+                  <td class="text-end">
+                    <button class="btn btn-sm flag-btn"
+                            [class.flagged]="row.flagged"
+                            (click)="toggleFlag(row)"
+                            title="Toggle follow-up flag">
+                      <span *ngIf="row.flagged">🚩</span>
+                      <span *ngIf="!row.flagged">⚐</span>
+                    </button>
+                  </td>
+                </tr>
+ 
+                <tr *ngIf="filteredRisks.length === 0">
+                  <td colspan="10" class="text-center text-muted py-4">
+                    No records found for current filters.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+ 
+      </div>
+    </div>
+ 
+  </div>
+</div>
+ 
+ 
+ 
