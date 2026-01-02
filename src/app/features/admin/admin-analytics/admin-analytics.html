@@ -1,1 +1,163 @@
+
 <app-sidebar></app-sidebar>
+
+<!-- Main Content -->
+<main class="main">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="page-header__titles">
+      <h1 class="page-title">Analytics &amp; Reporting Dashboard</h1>
+      <p class="page-subtitle">Insurance Retention &amp; Performance Overview</p>
+    </div>
+
+    <div class="page-header__controls">
+      <label class="sr-only" for="dateRange">Date range</label>
+      <select id="dateRange" class="select">
+        <option>Last 7 Days</option>
+        <option selected>Last 30 Days</option>
+        <option>This Month</option>
+      </select>
+    </div>
+  </header>
+
+  <!-- KPI Cards -->
+  <section class="kpi-grid" aria-label="Key Metrics">
+    <!-- 1 -->
+    <div class="kpi-card">
+      <div class="kpi-card__title">Renewal Rate</div>
+      <div class="kpi-card__value">85%</div>
+      <div class="kpi-card__desc">Percentage of policies renewed</div>
+    </div>
+    <!-- 2 -->
+    <div class="kpi-card">
+      <div class="kpi-card__title">Churn Rate</div>
+      <div class="kpi-card__value">5%</div>
+      <div class="kpi-card__desc">Customers not renewing</div>
+    </div>
+    <!-- 3 -->
+    <div class="kpi-card">
+      <div class="kpi-card__title">High Risk Customers</div>
+      <div class="kpi-card__value">1,200</div>
+      <div class="kpi-card__desc">Flagged by risk models</div>
+    </div>
+    <!-- 4 -->
+    <div class="kpi-card">
+      <div class="kpi-card__title">Predictions Run Today</div>
+      <div class="kpi-card__value">12,350 / 50,000</div>
+      <div class="kpi-card__desc">Execution progress for today</div>
+      <div class="progress">
+        <div class="progress__bar" style="width: 24.7%"></div>
+      </div>
+    </div>
+    <!-- 5 -->
+    <div class="kpi-card">
+      <div class="kpi-card__title">Engagement Response Rate</div>
+      <div class="kpi-card__value">38%</div>
+      <div class="kpi-card__desc">Responses to outreach</div>
+    </div>
+    <!-- 6 -->
+    <div class="kpi-card">
+      <div class="kpi-card__title">Campaign ROI</div>
+      <div class="kpi-card__value">650%</div>
+      <div class="kpi-card__desc">Return on latest campaigns</div>
+    </div>
+    <!-- 7 -->
+    <div class="kpi-card">
+      <div class="kpi-card__title">Upcoming Expiries (30 Days)</div>
+      <div class="kpi-card__value">950</div>
+      <div class="kpi-card__desc">Policies expiring within 30 days</div>
+    </div>
+    <!-- 8 -->
+    <div class="kpi-card">
+      <div class="kpi-card__title">Average Risk Score</div>
+      <div class="kpi-card__value">62 / 100</div>
+      <div class="kpi-card__desc">Portfolio risk index</div>
+      <div class="meter">
+        <div class="meter__fill" style="width: 62%"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Charts Section -->
+  <section class="charts" aria-label="Charts">
+    <!-- Renewal Trend -->
+    <div class="chart-card">
+      <div class="chart-card__header">
+        <h3>Renewal Trend</h3>
+      </div>
+      <div class="chart-container">
+        <canvas #renewalCanvas class="chart-canvas" aria-label="Renewal Trend chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Churn by Policy Type -->
+    <div class="chart-card">
+      <div class="chart-card__header">
+        <h3>Churn by Policy Type</h3>
+      </div>
+      <div class="chart-container">
+        <canvas #churnCanvas class="chart-canvas" aria-label="Churn by Policy Type chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Customer Risk Distribution -->
+    <div class="chart-card">
+      <div class="chart-card__header">
+        <h3>Customer Risk Distribution</h3>
+      </div>
+      <div class="chart-container">
+        <canvas #riskCanvas class="chart-canvas" aria-label="Customer Risk Distribution chart"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reports Section -->
+  <section class="reports" aria-label="Reports">
+    <div class="section-header">
+      <h2>Reports</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Report Name</th>
+            <th>Report Type</th>
+            <th>Generated Date</th>
+            <th>Status</th>
+            <th class="align-right">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Monthly Retention Report</td>
+            <td>PDF</td>
+            <td>01 Jan 2025</td>
+            <td><span class="badge badge--success">Ready</span></td>
+            <td class="align-right">
+              <button class="btn btn--Secondary">Download</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Campaign Performance Report</td>
+            <td>Excel</td>
+            <td>01 Jan 2025</td>
+            <td><span class="badge badge--success">Ready</span></td>
+            <td class="align-right">
+              <button class="btn btn--Secondary">Download</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Churn Analysis Report</td>
+            <td>CSV</td>
+            <td>01 Jan 2025</td>
+            <td><span class="badge badge--success">Ready</span></td>
+            <td class="align-right">
+              <button class="btn btn--Secondary">Download</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
