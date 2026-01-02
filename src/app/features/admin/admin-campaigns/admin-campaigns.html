@@ -3,23 +3,8 @@
 <app-sidebar></app-sidebar>
 <div class="rs-page">
 
-  <!-- NAV BAR (Sky Blue) -->
-  <div class="rs-navbar">
-    <div class="container d-flex justify-content-between align-items-center">
-      <div class="nav-left d-flex align-items-center gap-3">
-        <div class="nav-brand d-flex align-items-center gap-2">
-        </div>
-      </div>
-
-      <div class="nav-right d-flex align-items-center gap-3">
-        <div class="user-meta text-end">
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- BLUE BAND A: Overview -->
-  <div class="blue-band band-a">
+  <div class="blue-band band-a border rounded my-2">
     <div class="rs-container container">
       <div class="container-title d-flex align-items-center justify-content-between">
         <span>Overview</span>
@@ -48,7 +33,7 @@
   </div>
 
   <!-- BLUE BAND B: Create / Edit Campaign -->
-  <div class="blue-band band-b">
+  <div class="blue-band band-b border rounded my-2">
     <div class="rs-container rs-create container">
       <div class="container-title d-flex align-items-center justify-content-between">
         <span>{{ isEditing() ? 'Edit Campaign' : 'Create New Campaign' }}</span>
@@ -108,11 +93,11 @@
         <div class="actions span-2 d-flex gap-2">
           <ng-container *ngIf="!isEditing(); else editActions">
             <button type="button" class="rs-btn btn btn-outline-secondary" (click)="saveDraft()">Save Draft</button>
-            <button type="button" class="rs-btn rs-btn-primary btn btn-primary" (click)="launchCampaign()">Launch Campaign</button>
+            <button type="button" class="update rounded" (click)="launchCampaign()">Launch Campaign</button>
           </ng-container>
           <ng-template #editActions>
             <button type="button" class="rs-btn btn btn-outline-secondary" (click)="cancelEdit()">Cancel</button>
-            <button type="button" class="rs-btn rs-btn-primary btn btn-primary" (click)="saveUpdate()">Update</button>
+            <button type="button" class="update rounded" (click)="saveUpdate()">Update</button>
           </ng-template>
         </div>
       </form>
@@ -120,12 +105,11 @@
   </div>
 
   <!-- BLUE BAND C: Campaigns (Module Fields) -->
-  <div class="blue-band band-c">
+  <div class="blue-band band-c border rounded my-2">
     <div class="rs-container container">
       <div class="container-title d-flex align-items-center justify-content-between">
         <span>Campaigns</span>
-        <button type="button" class="rs-btn rs-btn-soft btn btn-light">View All</button>
-      </div>
+          </div>
 
       <div class="table-wrap">
         <table class="rs-grid table align-middle">

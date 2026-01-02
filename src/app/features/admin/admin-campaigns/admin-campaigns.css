@@ -4,11 +4,10 @@
   position: fixed;
   top: 0;
   right: 0;
-  width: 72.5vw; /* Sidebar takes ~27.5vw */
+  width: 77vw; /* Sidebar takes ~27.5vw */
   height: 100vh;
-  background-color: #f8f9fa;
+  background-color: white;
   overflow-y: auto;
-  box-shadow: -2px 0 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   font-size: 0.9rem;
 }
@@ -19,9 +18,6 @@
 .blue-band {
   padding: 1.5rem 0;
 }
-.band-a { background: #f9fbff; }
-.band-b { background: #f1f7ff; }
-.band-c { background: #ffffff; }
 
 /* Titles */
 .container-title {
@@ -65,4 +61,12 @@
 .edit-badge {
   font-size: 0.85rem;
   color: #0d6efd;
+}
+.update{
+  background-color: #3a71cb;
+  color: white;
+  border: none;
+}
+.update:hover{
+  background-color: #2b569c;
 }
