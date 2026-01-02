@@ -23,7 +23,7 @@ export class AdminAnalytics implements AfterViewInit, OnDestroy {
   readonly months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   readonly renewalRate = [82, 84, 79, 85, 88, 86, 87, 89, 90, 88, 91, 92]; // %
 
-  readonly policyTypes = ['Auto', 'Health', 'Home', 'Life', 'Travel'];
+  readonly policyTypes = [ 'Health', 'Motor'];
   readonly policyChurn = [4.8, 6.1, 3.9, 5.3, 7.0]; // %
 
   readonly riskBands = ['Low', 'Medium', 'High'];

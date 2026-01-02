@@ -1,0 +1,75 @@
+
+<!-- src/app/components/policy-list/policy-list.component.html -->
+<div class="policy-list-container">
+  <div class="header-row">
+    <h5 class="page-title">{{ heading }}</h5>
+    <button class="btn btn-primary" (click)="onAddNewPolicy()">Add New Policy</button>
+  </div>
+
+ 
+<div class="toolbar">
+  <div class="search-container">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="🔍 Search by policy name..."
+      [(ngModel)]="searchTerm"
+      (input)="applyFilters()"
+      aria-label="Search by policy name"
+    />
+  </div>
+</div>
+
+
+  <div class="table-wrapper">
+    <table class="policy-table">
+      <thead>
+        <tr>
+          <th>Policy ID</th>
+          <th>Policy Name</th>
+          <th>Policy Type</th>
+          <th>Category</th>
+          <th>Coverage Amount</th>
+          <th>Premium Amount</th>
+          <th>Duration (Years)</th>
+          <th>Status</th>
+          <th class="action-col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of displayedPolicies; trackBy: trackByPolicyId">
+          <td>{{ p.policyId }}</td>
+          <td class="name-cell">
+            <span class="name">{{ p.policyName }}</span>
+            <small class="created">Created: {{ p.createdDate | date: 'mediumDate' }}</small>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'badge-motor': p.policyType === 'Motor',
+              'badge-health': p.policyType === 'Health'
+            }">{{ p.policyType }}</span>
+          </td>
+          <td>{{ p.policyCategory }}</td>
+          <td>{{ p.coverageAmount | currency:'INR':'symbol':'1.0-0' }}</td>
+          <td>{{ p.premiumAmount | currency:'INR':'symbol':'1.0-0' }}</td>
+          <td>{{ p.durationYears }}</td>
+          <td>
+            <span class="badge" [ngClass]="{
+              'badge-active': p.status === 'Active',
+              'badge-inactive': p.status === 'Inactive'
+            }">{{ p.status }}</span>
+          </td>
+          <td class="action-col">
+            <button class="btn btn-outline" (click)="viewPolicy(p)">View</button>
+          </td>
+        </tr>
+
+        <tr *ngIf="displayedPolicies.length === 0">
+          <td colspan="9" class="empty-state">
+            No policies found. Try adjusting the search.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

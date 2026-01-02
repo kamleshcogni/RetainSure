@@ -1,1 +1,239 @@
 <app-sidebar></app-sidebar>
+
+
+
+<!-- Main Content -->
+<div class="main-content">
+
+  <!-- Top Bar / Header -->
+  <header class="topbar d-flex align-items-center justify-content-between px-3 py-2">
+    <div class="d-flex align-items-center gap-3">
+      <!-- <span class=" ms-3 fs-4 fw-bold" style="color: #000103; font-size: xx-large;">Admin Dashboard</span> -->
+
+      <!-- Global Search -->
+      <div class="input-group search-group">
+        <span class="input-group-text bg-white border-end-0">🔎</span>
+        <input
+          type="text"
+          class="form-control border-start-0"
+          placeholder="Search by Customer ID / Policy ID"
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="onSearchChange()"
+        />
+      </div>
+
+      <!-- Date Range -->
+      <!-- <select class="form-select form-select-sm w-auto" [(ngModel)]="dateRange" (change)="onDateRangeChange(dateRange)">
+        <option>Last 7 Days</option>
+        <option>Last 30 Days</option>
+        <option>This Month</option>
+      </select> -->
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <!-- Notification Icon -->
+      <button class="btn btn-outline-secondary btn-sm" (click)="onNotificationClick()" title="Notifications">🔔</button>
+
+      <!-- Profile Dropdown (UI only)    data-bs-toggle="dropdown"-->
+      <div class="dropdown">
+        <button class="btn btn-primary btn-sm dropdown-toggle" routerLink="">
+
+         Logout
+          </button>
+        
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="javascript:void(0)">Profile</a></li>
+          <li><a class="dropdown-item" href="javascript:void(0)">Settings</a></li>
+          <li><hr class="dropdown-divider" /></li>
+          <li><a class="dropdown-item text-danger" href="javascript:void(0)" (click)="onLogout()">Logout</a></li>
+        </ul>
+        
+      </div>
+    </div>
+   
+  </header>
+
+  <div class="container-fluid py-3">
+
+    <!-- SECTION 2: POLICY SNAPSHOT -->
+    <div class="row g-3">
+      <div class="col-12">
+        <h6 class="section-title">Policy Snapshot</h6>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card dashboard-card">
+          <div class="card-body">
+            <div class="card-title">Total Policies</div>
+            <div class="card-count">{{ policySummary.totalPolicies | number }}</div>
+            <button class="btn btn-sm btn-outline-primary w-100 mt-2" routerLink="/admin/policies/all" (click)="onViewAllPolicies()">View All Policies</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card dashboard-card">
+          <div class="card-body">
+            <div class="card-title">Motor Policies</div>
+            <div class="card-count">{{ policySummary.motorPolicies | number }}</div>
+            <button class="btn btn-sm btn-outline-primary w-100 mt-2" routerLink="/admin/policies/motor" (click)="onViewMotorPolicies()">View Motor Policies</button>
+          </div>
+        </div>
+      </div>
+      
+
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card dashboard-card">
+          <div class="card-body">
+            <div class="card-title">Health Policies</div>
+            <div class="card-count">{{ policySummary.healthPolicies | number }}</div>
+            <button class="btn btn-sm btn-outline-primary w-100 mt-2" routerLink="/admin/policies/health" (click)="onViewHealthPolicies()">View Health Policies</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="card dashboard-card">
+          <div class="card-body">
+            <div class="card-title">Policies Expiring Soon</div>
+            <div class="card-count">{{ policySummary.expiringSoonPolicies | number }}</div>
+            <button class="btn btn-sm btn-outline-primary w-100 mt-2" (click)="onViewExpiringPolicies()">View Expiring Policies</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+   
+
+    <!-- SECTION 4: QUICK FILTERS -->
+    <div class="row g-3 mt-3">
+      <div class="col-12">
+        <h6 class="section-title">Quick Filters</h6>
+      </div>
+
+      <div class="col-12 d-flex flex-wrap align-items-center gap-3">
+        <!-- Policy Type Filter -->
+        <div class="btn-group" role="group" aria-label="Policy Type">
+          <input type="radio" class="btn-check" name="policyType" id="pt-all" [checked]="policyTypeFilter==='All'" (change)="onPolicyTypeChange('All')">
+          <label class="btn btn-outline-secondary" for="pt-all">All</label>
+
+          <input type="radio" class="btn-check" name="policyType" id="pt-motor" [checked]="policyTypeFilter==='Motor'" (change)="onPolicyTypeChange('Motor')">
+          <label class="btn btn-outline-secondary" for="pt-motor">Motor</label>
+
+          <input type="radio" class="btn-check" name="policyType" id="pt-health" [checked]="policyTypeFilter==='Health'" (change)="onPolicyTypeChange('Health')">
+          <label class="btn btn-outline-secondary" for="pt-health">Health</label>
+        </div>
+
+        <!-- Risk Level Filter (High only) -->
+        <div class="btn-group" role="group" aria-label="Risk Level">
+          <input type="radio" class="btn-check" name="riskLevel" id="rl-high" checked (change)="onRiskLevelChange('High')">
+          <label class="btn btn-outline-danger" for="rl-high">High</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: HIGH-RISK CUSTOMERS TABLE -->
+    <div class="row g-3 mt-2">
+      <div class="col-12">
+        <h6 class="section-title">High-Risk Customers</h6>
+        <div class="card table-card">
+          <div class="table-responsive">
+            <table class="table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Customer ID / Name</th>
+                  <th>Policy ID</th>
+                  <th>Policy Type</th>
+                  <th>Renewal Probability (%)</th>
+                  <th>Risk Level</th>
+                  <th>Expiry Date</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of highRiskCustomersFiltered">
+                  <td>
+                    <div class="fw-semibold">{{ row.customerId }}</div>
+                    <div class="text-muted small">{{ row.customerName }}</div>
+                  </td>
+                  <td>{{ row.policyId }}</td>
+                  <td>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ row.policyType }}</span>
+                  </td>
+                  <td>{{ row.renewalProbability }}%</td>
+                  <td>
+                    <span class="badge badge-high">High</span>
+                  </td>
+                  <td>{{ row.expiryDate | date:'mediumDate' }}</td>
+                  <td class="text-end">
+                    <button class="btn btn-sm btn-outline-primary me-2" (click)="onViewCustomer(row)">View</button>
+                    
+                  </td>
+                </tr>
+                <tr *ngIf="highRiskCustomersFiltered.length === 0">
+                  <td colspan="7" class="text-center text-muted py-4">No records found for current filters.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+        <!-- SECTION 3: ALERTS -->
+    <div class="row g-3 mt-2">
+      <div class="col-12">
+        <h6 class="section-title">Alerts</h6>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <div class="card alert-card urgent">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+              <span class="indicator"></span>
+              <div>
+                <div class="alert-title">Expiring in 7 days</div>
+                <div class="alert-subtitle text-muted">Requires immediate attention</div>
+              </div>
+            </div>
+            <div class="alert-count">{{ alertsSummary.expiringIn7DaysCount }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <div class="card alert-card warning">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+              <span class="indicator"></span>
+              <div>
+                <div class="alert-title">High-risk pending contact</div>
+                <div class="alert-subtitle text-muted">Follow-ups required</div>
+              </div>
+            </div>
+            <div class="alert-count">{{ alertsSummary.highRiskPendingContactCount }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <div class="card alert-card info">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+              <span class="indicator"></span>
+              <div>
+                <div class="alert-title">Failed reminders</div>
+                <div class="alert-subtitle text-muted">Delivery issues</div>
+              </div>
+            </div>
+            <div class="alert-count">{{ alertsSummary.failedRemindersCount }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+

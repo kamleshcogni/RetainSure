@@ -139,7 +139,7 @@
 /* Risk level badges */
 .badge-high {
   background: var(--rs-danger);
-  color: #fff;
+  color: #d50a0a;
 }
 .badge-medium {
   background: var(--rs-warning);
@@ -147,7 +147,7 @@
 }
 .badge-low {
   background: var(--rs-success);
-  color: #fff;
+  color: #198754;
 }
  
 /* Status badge override (Bootstrap utility) */
