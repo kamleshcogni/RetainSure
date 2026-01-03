@@ -175,3 +175,10 @@ button.ghost:hover {
     padding-top: 96px;
   }
 }
+/* //tool bar serch */
+.list-toolbar input[type="number"] {
+  min-width: 280px;   /* or 300px, 320px as you prefer */
+  width: 30%;        /* allows it to grow */
+  box-sizing: border-box;
+}
+

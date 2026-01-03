@@ -12,8 +12,7 @@
   <section class="card">
     <div class="list-toolbar">
       <label>
-        search by Customer ID
-        <input type="number" [(ngModel)]="custIdFilter" placeholder="e.g. 1001" />
+        <input type="number" [(ngModel)]="custIdFilter" placeholder="🔎search by Customer ID e.g. 1001" />
       </label>
       <div class="actions">
         <button class="ghost" (click)="filterByCustomer()">Apply</button>
@@ -163,5 +162,5 @@
       Created <strong>{{ lastBulkCreatedCount }}</strong> reminders in bulk.
     </div>
   </section>
-
 </div>
+
