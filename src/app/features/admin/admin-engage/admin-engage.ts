@@ -1,17 +1,14 @@
 
-   
-// src/app/features/admin/admin-engage/admin-engage.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable, forkJoin } from 'rxjs';
 import { Sidebar } from '../../../shared/sidebar/sidebar';
-import{ MockDataService, Reminder, Customer } from '../../../features/admin/admin.service'; ;
+import { MockDataService, Reminder, Customer } from '../../../features/admin/admin.service';
 
 // ✅ Import shared service and types (no local interfaces/mock
 
 type Mode = 'EMAIL' | 'SMS';
-22
 
 @Component({
   selector: 'app-admin-engage',
@@ -95,6 +92,13 @@ export class AdminEngage implements OnInit {
       alert('Please fill Customer ID, Policy ID, Date, and Trigger.');
       return;
     }
+
+    // ✅ Block past dates
+    if (this.isPastDate(f.date_sent)) {
+      alert('Date cannot be in the past.');
+      return;
+    }
+
     this.creating = true;
 
     // Uses the single shared service
@@ -116,6 +120,12 @@ export class AdminEngage implements OnInit {
   bulkCreateByRiskScore(): void {
     if (!this.bulkForm.date_sent || !this.bulkForm.trigger) {
       alert('Please fill Date and Trigger for bulk creation.');
+      return;
+    }
+
+    // ✅ Block past dates
+    if (this.isPastDate(this.bulkForm.date_sent)) {
+      alert('Date cannot be in the past for bulk creation.');
       return;
     }
 
@@ -199,5 +209,25 @@ export class AdminEngage implements OnInit {
     const c = this.customers.find(x => x.cust_id === custId);
     return c?.risk_score;
   }
-}
 
+  // ===== ✅ Date helpers (added) =====
+
+  /** Returns today's date in YYYY-MM-DD (local time) */
+  todayISO(): string {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  /** Returns true if the given ISO date (YYYY-MM-DD) is strictly before today */
+  isPastDate(isoDate: string): boolean {
+    if (!isoDate) return false;
+    const selected = new Date(isoDate);
+    const now = new Date();
+    selected.setHours(0, 0, 0, 0);
+    now.setHours(0, 0, 0, 0);
+    return selected < now;
+  }
+}
