@@ -1,8 +1,10 @@
 <div class="d-flex flex-column flex-shrink-0 vh-100 p-3 bg-light position-fixed top-0 start-0" style="width: 280px;">
-    <a href="/" class="d-flex align-items-center mx-auto mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-      <img src="/just-logo.png" alt="logo" height="48">
-      <span class=" ms-3 fs-4 fw-bold" style="color: #3a71cb; font-size: xx-large;">RetainSure</span>
-    </a>
+    
+<a routerLink="/" class="d-flex align-items-center mx-auto mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+  <img src="/just-logo.png" alt="logo" height="48">
+  <span class=" ms-3 fs-4 fw-bold" style="color: #3a71cb; font-size: xx-large;">RetainSure</span>
+</a>
+
     <hr>
     <ul class="nav nav-pills text-secondary flex-column mb-auto">
       <li class="nav-item">
@@ -37,10 +39,20 @@
       </li>
     </ul>
     <hr>
-    <div class="text-secondary">
-        <a routerLink="/admin/settings" class="nav-link py-2 rounded fw-semibold link">
-              <i class="bi bi-gear me-2 ms-3"></i>
-              Settings
-            </a>
-    </div>
+    
+
+
+<div class="text-secondary">
+  <button
+    type="button"
+    class="nav-link py-2 rounded fw-semibold link btn btn-outline-danger w-100 text-start"
+    (click)="logout()"
+  >
+    <i class="bi bi-box-arrow-right me-2 ms-3"></i>
+    Logout
+  </button>
+</div>
+
+
+
   </div>

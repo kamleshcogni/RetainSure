@@ -5,8 +5,10 @@ import { AdminRisk } from './features/admin/admin-risk/admin-risk';
 import { AdminEngage } from './features/admin/admin-engage/admin-engage';
 import { AdminCampaigns } from './features/admin/admin-campaigns/admin-campaigns';
 import { AdminAnalytics } from './features/admin/admin-analytics/admin-analytics';
-import { AdminSettings } from './features/admin/admin-settings/admin-settings';
 import { RoleGuard } from './core/auth/role.guard';
+import { CustomerDashboard } from './features/customer/customer-dashboard/customer-dashboard';
+import { CustomerSettings } from './features/customer/customer-settings/customer-settings';
+import { LoggedOutGuard } from './core/auth/logged-out.guard';
 
 export const routes: Routes = [
     {path: 'admin/dashboard', component:AdminDashboard, canActivate: [RoleGuard], data: {roles: ['admin']}},
@@ -14,7 +16,7 @@ export const routes: Routes = [
     {path: 'admin/engage', component:AdminEngage, canActivate: [RoleGuard], data: {roles: ['admin']}},
     {path: 'admin/campaigns', component:AdminCampaigns, canActivate: [RoleGuard], data: {roles: ['admin']}},
     {path: 'admin/analytics', component:AdminAnalytics, canActivate: [RoleGuard], data: {roles: ['admin']}},
-    {path: 'admin/settings', component:AdminSettings, canActivate: [RoleGuard], data: {roles: ['admin']}},
-    {path: '', component:Login},
-    {path: '**', redirectTo:''}
+    {path: 'customer/dashboard', component:CustomerDashboard, canActivate: [RoleGuard], data: {roles: ['customer']}},
+    {path: 'customer/settings', component:CustomerSettings, canActivate: [RoleGuard], data: {roles: ['customer']}},
+    {path: '', component:Login, canActivate: [LoggedOutGuard]}
 ];

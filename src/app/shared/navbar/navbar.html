@@ -1,17 +1,70 @@
-<nav class="navbar navbar-expand-lg shadow-sm fixed-top" style="background-color: white">
-    <div class="container-fluid">
-        <div class="navbar-header mx-5">
-            
-<a class="navbar-brand d-flex align-items-center" routerLink="/">
-      <img
-        src="/just-logo.png"       
-        alt="RetainSure"
-        height="64"
-        class="d-inline-block align-text-top me-2"
-      />
-      <span class="fw-bold mx-3" style="color: #3a71cb; font-size: xx-large;">RetainSure</span>
-    </a>
 
-        </div>
+<nav class="navbar navbar-expand-lg shadow-sm fixed-top" style="background-color: white">
+  <div class="container-fluid">
+
+    <!-- Brand -->
+    <div class="navbar-header mx-5">
+      <a class="navbar-brand d-flex align-items-center" routerLink="/">
+        <img
+          src="/just-logo.png"
+          alt="RetainSure"
+          height="64"
+          class="d-inline-block align-text-top me-2"
+        />
+        <span class="fw-bold mx-3" style="color: #3a71cb; font-size: xx-large;">RetainSure</span>
+      </a>
     </div>
+
+    <!-- Right side: profile / controls -->
+    <div class="ms-auto me-3 d-flex align-items-center gap-3">
+
+      <!-- Logged-in -->
+      <ng-container *ngIf="auth.currentUser$ | async as user; else loggedOut">
+        <!-- Avatar -->
+        <div class="d-flex align-items-center gap-2">
+          <div class="rounded-circle d-flex align-items-center justify-content-center"
+               style="width:36px; height:36px; background:#e8f0ff; color:#2e78ff; font-weight:700;">
+            {{ avatarInitials(user) }}
+          </div>
+          <div class="d-flex flex-column">
+            <span class="fw-semibold" style="font-size: .95rem;">{{ user.name }}</span>
+            <span class="text-secondary" style="font-size: .85rem;">{{ user.email }}</span>
+          </div>
+        </div>
+
+        
+<!-- Settings / Back to Dashboard -->
+<ng-container *ngIf="isOnSettingsPage; else showSettings">
+  <button class="btn btn-outline-primary btn-sm" (click)="goDashboard()">
+    <i class="bi bi-arrow-left-circle me-1"></i>Dashboard
+  </button>
+</ng-container>
+<ng-template #showSettings>
+  <button class="btn btn-outline-secondary btn-sm" (click)="goSettings()">
+    <i class="bi bi-gear me-1"></i>Settings
+  </button>
+</ng-template>
+
+<!-- Logout -->
+<button class="btn btn-outline-danger btn-sm" (click)="logout()">
+  <i class="bi bi-box-arrow-right me-1"></i>Logout
+</button>
+
+      </ng-container>
+
+      <!-- Logged-out -->
+      <ng-template #loggedOut>
+        <!-- Keep empty for landing page, or show a Sign In CTA -->
+        <div class="text-secondary" style="font-size:.9rem;">&nbsp;</div>
+
+        <!-- Optional: Sign In mock button (you can remove this) -->
+        <!--
+        <button class="btn btn-primary btn-sm" (click)="auth.login('kamlesh@example.com', 'password')">
+          <i class="bi bi-person-circle me-1"></i>Sign In
+        </button>
+        -->
+      </ng-template>
+
+    </div>
+  </div>
 </nav>

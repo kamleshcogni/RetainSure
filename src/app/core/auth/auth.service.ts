@@ -1,83 +1,141 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { BehaviorSubject, map, distinctUntilChanged } from 'rxjs';
 
 export type Role = 'admin' | 'customer';
-export interface User {
-    email: string,
-    password: string,
-    role: Role,
-    name?: string
-}
-@Injectable({providedIn : 'root'})
-export class AuthService{
-    private users: User[] = [
-        {
-            email:'kamlesh@example.com',
-            password:'password',
-            role:'admin',
-            name:'Kamlesh'
-        },
-        {
-            email:'logesh@example.com',
-            password:'password',
-            role:'admin',
-            name:'Logesh'
-        },
-        {
-            email:'hari@example.com',
-            password:'password',
-            role:'customer',
-            name:'Hari'
-        },
-        {
-            email:'sejal@example.com',
-            password:'password',
-            role:'customer',
-            name:'sejal'
-        },
-        {
-            email:'sruthi@example.com',
-            password:'password',
-            role:'customer',
-            name:'Sruthi'
-        },
-        {
-            email:'shree@example.com',
-            password:'password',
-            role:'customer',
-            name:'Shree'
-        }   
-    ];
-    private currentUserSubject = new BehaviorSubject<User | null>(this.getStoredUser());
-    currentUser$ = this.currentUserSubject.asObservable();
-    login(email: string, password: string) : User | null{
-        const user = this.users.find(
-            u => u.email === email && u.password === password
-        );
-        if (user) {
-            localStorage.setItem('auth_user', JSON.stringify(user));
-            this.currentUserSubject.next(user);
-            return user;
-        }
-        return null;
-    }
-    logout(){
-        localStorage.removeItem('auth_user');
-        this.currentUserSubject.next(null);
 
+export interface User {
+  email: string;
+  password: string; // mock only; don't store plaintext in production
+  role: Role;
+  name?: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private static readonly STORAGE_KEY = 'auth_user';
+
+  /** Mock users (hardcoded) */
+  private readonly users: User[] = [
+    { email: 'kamlesh@example.com', password: 'password', role: 'admin',    name: 'Kamlesh' },
+    { email: 'logesh@example.com',  password: 'password', role: 'admin',    name: 'Logesh'  },
+    { email: 'hari@example.com',    password: 'password', role: 'customer', name: 'Hari'    },
+    { email: 'sejal@example.com',   password: 'password', role: 'customer', name: 'Sejal'   },
+    { email: 'sruthi@example.com',  password: 'password', role: 'customer', name: 'Sruthi'  },
+    { email: 'shree@example.com',   password: 'password', role: 'customer', name: 'Shree'   },
+  ];
+
+  /** Is this running in a browser (has window & DOM)? */
+  private readonly isBrowser: boolean;
+
+  /** Subject for current user */
+  private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
+
+  /** Observable streams */
+  readonly currentUser$ = this.currentUserSubject.asObservable();
+  readonly isLoggedIn$ = this.currentUser$.pipe(
+    map(u => !!u),
+    distinctUntilChanged()
+  );
+
+  constructor(@Inject(PLATFORM_ID) platformId: Object) {
+    this.isBrowser = isPlatformBrowser(platformId);
+
+    // Initialize from storage ONLY in browser
+    if (this.isBrowser) {
+      const stored = this.readStoredUser();
+      if (stored) {
+        this.currentUserSubject.next(stored);
+      }
     }
-    getStoredUser(): User | null{
-        try{
-            return JSON.parse(localStorage.getItem('auth_user') || 'null')
-        } catch{
-            return null;
-        }
+  }
+
+  /** --- Auth operations --- */
+
+  login(email: string, password: string): User | null {
+    const user = this.users.find(u => u.email === email && u.password === password) ?? null;
+    if (user) {
+      this.persistUser(user);         // safe in browser, no-op on server
+      this.currentUserSubject.next(user);
     }
-    isLoggedIn(): boolean{
-        return !!this.getStoredUser();
+    return user;
+  }
+
+  logout(): void {
+    this.clearStoredUser();           // safe in browser, no-op on server
+    this.currentUserSubject.next(null);
+  }
+
+  getCurrentUser(): User | null {
+    return this.currentUserSubject.value;
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.currentUserSubject.value;
+  }
+
+  hasRole(roles: Role[]): boolean {
+    const u = this.currentUserSubject.value;
+    return !!u && roles.includes(u.role);
+  }
+
+  updateProfile(patch: Partial<Pick<User, 'name' | 'email'>>): void {
+    const u = this.currentUserSubject.value;
+    if (!u) return;
+    const updated: User = { ...u, ...patch };
+    this.persistUser(updated);
+    this.currentUserSubject.next(updated);
+  }
+
+  setUser(user: User | null): void {
+    if (user) {
+      this.persistUser(user);
+      this.currentUserSubject.next(user);
+    } else {
+      this.logout();
     }
-    hasRole(roles: Role[]): boolean{
-        const u = this.getStoredUser();
-        return !!u && roles.includes(u.role);
+  }
+
+  /** --- Storage helpers: safely wrap localStorage --- */
+
+  private readStoredUser(): User | null {
+    if (!this.isBrowser) return null; // SSR: no storage
+    try {
+      const raw = globalThis?.localStorage?.getItem(AuthService.STORAGE_KEY);
+      return raw ? (JSON.parse(raw) as User) : null;
+    } catch {
+      // if JSON corrupt or localStorage not available
+      this.clearStoredUser();
+      return null;
     }
+  }
+
+  private persistUser(user: User): void {
+    if (!this.isBrowser) return; // SSR: no storage
+    try {
+      // Ensure localStorage API exists & is a function
+      if (typeof globalThis?.localStorage?.setItem === 'function') {
+        globalThis.localStorage.setItem(AuthService.STORAGE_KEY, JSON.stringify(user));
+      }
+    } catch {
+      // swallow on server or storage failures
+    }
+  }
+
+  private clearStoredUser(): void {
+    if (!this.isBrowser) return; // SSR: no storage
+    try {
+      if (typeof globalThis?.localStorage?.removeItem === 'function') {
+        globalThis.localStorage.removeItem(AuthService.STORAGE_KEY);
+      }
+    } catch {
+      // swallow on server or storage failures
+    }
+  }
+
+  /** For backward compatibility if you still call this elsewhere */
+  getStoredUser(): User | null {
+    return this.readStoredUser();
+  }
 }
