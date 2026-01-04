@@ -6,9 +6,7 @@ import { AdminEngage } from './features/admin/admin-engage/admin-engage';
 import { AdminCampaigns } from './features/admin/admin-campaigns/admin-campaigns';
 import { AdminAnalytics } from './features/admin/admin-analytics/admin-analytics';
 import { RoleGuard } from './core/auth/role.guard';
-import { CustomerDashboard } from './features/customer/customer-dashboard/customer-dashboard';
-import { CustomerSettings } from './features/customer/customer-settings/customer-settings';
-import { LoggedOutGuard } from './core/auth/logged-out.guard';
+import { AdminPlolicyList } from './features/admin/admin-plolicy-list/admin-plolicy-list';
 
 export const routes: Routes = [
     {path: 'admin/dashboard', component:AdminDashboard, canActivate: [RoleGuard], data: {roles: ['admin']}},
@@ -16,7 +14,27 @@ export const routes: Routes = [
     {path: 'admin/engage', component:AdminEngage, canActivate: [RoleGuard], data: {roles: ['admin']}},
     {path: 'admin/campaigns', component:AdminCampaigns, canActivate: [RoleGuard], data: {roles: ['admin']}},
     {path: 'admin/analytics', component:AdminAnalytics, canActivate: [RoleGuard], data: {roles: ['admin']}},
-    {path: 'customer/dashboard', component:CustomerDashboard, canActivate: [RoleGuard], data: {roles: ['customer']}},
-    {path: 'customer/settings', component:CustomerSettings, canActivate: [RoleGuard], data: {roles: ['customer']}},
-    {path: '', component:Login, canActivate: [LoggedOutGuard]}
+
+     {
+    path: 'admin/policies/all',
+    component: AdminPlolicyList,
+    data: { policyType: 'All' }
+  },
+  {
+    path: 'admin/policies/motor',
+    component: AdminPlolicyList,
+    data: { policyType: 'Motor' }
+  },
+  {
+    path: 'admin/policies/health',
+    component: AdminPlolicyList,
+    data: { policyType: 'Health' }
+  },
+
+
+
+
+    
+    {path: '', component:Login},
+    {path: '**', redirectTo:''}
 ];
