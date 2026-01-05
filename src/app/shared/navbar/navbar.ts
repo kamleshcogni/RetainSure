@@ -39,7 +39,7 @@ export class Navbar implements OnInit, OnDestroy {
   }
 
   goDashboard() {
-    this.router.navigate(['/customer']); // adjust if your dashboard route differs
+    this.router.navigate(['/customer/dashboard']); // adjust if your dashboard route differs
   }
 
   logout() {

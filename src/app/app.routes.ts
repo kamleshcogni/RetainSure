@@ -7,6 +7,8 @@ import { AdminCampaigns } from './features/admin/admin-campaigns/admin-campaigns
 import { AdminAnalytics } from './features/admin/admin-analytics/admin-analytics';
 import { RoleGuard } from './core/auth/role.guard';
 import { AdminPlolicyList } from './features/admin/admin-plolicy-list/admin-plolicy-list';
+import { CustomerDashboard } from './features/customer/customer-dashboard/customer-dashboard';
+import { CustomerSettings } from './features/customer/customer-settings/customer-settings';
 
 export const routes: Routes = [
     {path: 'admin/dashboard', component:AdminDashboard, canActivate: [RoleGuard], data: {roles: ['admin']}},
@@ -30,11 +32,11 @@ export const routes: Routes = [
     component: AdminPlolicyList,
     data: { policyType: 'Health' }
   },
-
+  {path: 'customer/dashboard', component: CustomerDashboard, data: {roles: ['customer']}},
+  {path: 'customer/settings', component: CustomerSettings, data: {roles: ['customer']}},
 
 
 
     
     {path: '', component:Login},
-    {path: '**', redirectTo:''}
 ];
