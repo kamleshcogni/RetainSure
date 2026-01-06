@@ -1,9 +1,10 @@
+
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Campaign, Status } from './campaign.model';
 
 @Injectable({ providedIn: 'root' })
-export class Campaigns{
+export class Campaigns {
   /** Optional: app-wide segment catalog */
   private readonly segments: string[] = [
     'High Risk, High Value',
