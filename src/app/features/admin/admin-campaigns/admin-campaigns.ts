@@ -1,5 +1,4 @@
 
-// src/app/admin/campaigns/admin-campaigns.ts
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -20,6 +19,9 @@ export class AdminCampaigns {
 
   form!: FormGroup;
   editingIndex: number | null = null;
+
+  /** Track which campaign row is expanded for "Details" */
+  expandedIndex: number | null = null;
 
   // Local cache synchronized from service for easy indexing/edit operations
   campaigns: Campaign[] = [];
@@ -48,6 +50,11 @@ export class AdminCampaigns {
     this.svc.list().subscribe((rows) => {
       this.campaigns = rows;
       this.recomputeMetrics();
+
+      // If the expanded item shifts due to list changes, close details safely
+      if (this.expandedIndex !== null && this.expandedIndex >= this.campaigns.length) {
+        this.expandedIndex = null;
+      }
     });
   }
 
@@ -69,6 +76,7 @@ export class AdminCampaigns {
     }
     this.svc.launch(this.form.value);
     this.resetForm();
+    alert("Campaign notifications sent");
   }
 
   /** Table → Edit row */
@@ -86,6 +94,11 @@ export class AdminCampaigns {
     });
 
     setTimeout(() => document.querySelector('.rs-create')?.scrollIntoView({ behavior: 'smooth' }), 0);
+  }
+
+  /** Details → toggle expansion for a given row */
+  detailsbutton(index: number): void {
+    this.expandedIndex = this.expandedIndex === index ? null : index;
   }
 
   /** Edit → Update row */
@@ -146,7 +159,7 @@ export class AdminCampaigns {
     return { ACTIVE: 'chip-active', SCHEDULED: 'chip-scheduled', COMPLETED: 'chip-completed' }[s];
   }
 
-   toInputDate(iso: string): string {
+  toInputDate(iso: string): string {
     const d = new Date(iso);
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, '0');
@@ -166,4 +179,3 @@ export class AdminCampaigns {
     });
   }
 }
-``

@@ -1,5 +1,4 @@
 
-<!-- src/app/admin/campaigns/admin-campaigns.html -->
 <app-sidebar></app-sidebar>
 <div class="rs-page">
 
@@ -109,7 +108,7 @@
     <div class="rs-container container">
       <div class="container-title d-flex align-items-center justify-content-between">
         <span>Campaigns</span>
-          </div>
+      </div>
 
       <div class="table-wrap">
         <table class="rs-grid table align-middle">
@@ -127,34 +126,123 @@
               <th class="col-actions">Actions</th>
             </tr>
           </thead>
+
           <tbody>
-            <tr *ngFor="let c of campaigns; let i = index">
-              <td class="fw-semibold">{{ c.campaign_id }}</td>
-              <td class="cell-name fw-semibold">{{ c.campaign_name }}</td>
-              <td>
-                <span class="rs-chip" [ngClass]="statusClass(c.status)">{{ c.status }}</span>
-              </td>
-              <td>{{ c.target }}</td>
-              <td>{{ c.discount }}</td>
-              <td>{{ c.start_date ? (toInputDate(c.start_date)) : '-' }}</td>
-              <td>{{ c.end_date ? (toInputDate(c.end_date)) : '-' }}</td>
-              <td>{{ c.created_at ? (toInputDate(c.created_at)) : '-' }}</td>
-              <td>{{ c.modified_at ? (toInputDate(c.modified_at)) : '-' }}</td>
-              <td class="col-actions">
-                <button
-                  type="button"
-                  class="rs-btn btn btn-outline-secondary me-2"
-                  *ngIf="c.status !== 'COMPLETED'"
-                  (click)="editCampaign(i)"
-                >
-                  Edit
-                </button>
-                <button type="button" class="rs-btn btn btn-outline-secondary me-2" *ngIf="c.status === 'COMPLETED'">
-                  Report
-                </button>
-                <button type="button" class="rs-btn rs-btn-soft btn btn-light">Details</button>
-              </td>
-            </tr>
+            <!-- Use ng-container so we can render two rows per item: data + details -->
+            <ng-container *ngFor="let c of campaigns; let i = index">
+              <tr>
+                <td class="fw-semibold">{{ c.campaign_id }}</td>
+                <td class="cell-name fw-semibold">{{ c.campaign_name }}</td>
+                <td>
+                  <span class="rs-chip" [ngClass]="statusClass(c.status)">{{ c.status }}</span>
+                </td>
+                <td>{{ c.target }}</td>
+                <td>{{ c.discount }}</td>
+                <td>{{ c.start_date ? (toInputDate(c.start_date)) : '-' }}</td>
+                <td>{{ c.end_date ? (toInputDate(c.end_date)) : '-' }}</td>
+                <td>{{ c.created_at ? (toInputDate(c.created_at)) : '-' }}</td>
+                <td>{{ c.modified_at ? (toInputDate(c.modified_at)) : '-' }}</td>
+                <td class="col-actions">
+                  <button
+                    type="button"
+                    class="rs-btn btn btn-outline-secondary me-2"
+                    *ngIf="c.status !== 'COMPLETED'"
+                    (click)="editCampaign(i)"
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    type="button"
+                    class="rs-btn rs-btn-soft btn btn-light"
+                    (click)="detailsbutton(i)"
+                  >
+                    {{ expandedIndex === i ? 'Hide Details' : 'Details' }}
+                  </button>
+                </td>
+              </tr>
+
+              <!-- details row under each campaign -->
+              <tr *ngIf="expandedIndex === i" class="details-row">
+                <td colspan="10">
+                  <div class="details-panel p-3 border rounded bg-light">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                      <div class="fw-semibold">
+                        Details • {{ c.campaign_id }} — {{ c.campaign_name }}
+                      </div>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        (click)="detailsbutton(i)"
+                        aria-label="Close details"
+                      >
+                        Close
+                      </button>
+                    </div>
+
+                    <div class="row g-3">
+                      <div class="col-12 col-md-4">
+                        <div class="text-muted small">Status</div>
+                        <div>
+                          <span class="rs-chip" [ngClass]="statusClass(c.status)">{{ c.status }}</span>
+                        </div>
+                      </div>
+
+                      <div class="col-12 col-md-4">
+                        <div class="text-muted small">Target Segment</div>
+                        <div>{{ c.target }}</div>
+                      </div>
+
+                      <div class="col-12 col-md-4">
+                        <div class="text-muted small">Discount</div>
+                        <div>{{ c.discount }}</div>
+                      </div>
+
+                      <div class="col-12 col-md-4">
+                        <div class="text-muted small">Start Date</div>
+                        <div>{{ c.start_date ? toInputDate(c.start_date) : '-' }}</div>
+                      </div>
+
+                      <div class="col-12 col-md-4">
+                        <div class="text-muted small">End Date</div>
+                        <div>{{ c.end_date ? toInputDate(c.end_date) : '-' }}</div>
+                      </div>
+
+                      <div class="col-12 col-md-4">
+                        <div class="text-muted small">Created</div>
+                        <div>{{ c.created_at ? toInputDate(c.created_at) : '-' }}</div>
+                      </div>
+
+                      <div class="col-12 col-md-4">
+                        <div class="text-muted small">Modified</div>
+                        <div>{{ c.modified_at ? toInputDate(c.modified_at) : '-' }}</div>
+                      </div>
+
+                      <!-- Optional metrics if present -->
+                      <div class="col-12 col-md-4" *ngIf="c.segmentSize !== undefined">
+                        <div class="text-muted small">Segment Size</div>
+                        <div>{{ c.segmentSize }}</div>
+                      </div>
+
+                      <div class="col-12 col-md-4" *ngIf="c.conversions !== undefined">
+                        <div class="text-muted small">Conversions</div>
+                        <div>{{ c.conversions }}</div>
+                      </div>
+
+                      <div class="col-12 col-md-4" *ngIf="c.conversionRate !== undefined">
+                        <div class="text-muted small">Conversion Rate</div>
+                        <div>{{ c.conversionRate }}%</div>
+                      </div>
+
+                      <div class="col-12 col-md-4" *ngIf="c.roi !== undefined">
+                        <div class="text-muted small">ROI</div>
+                        <div>{{ c.roi }}%</div>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
           </tbody>
         </table>
       </div>
