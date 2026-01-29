@@ -14,34 +14,32 @@ import { AuthService } from '../core/auth/auth.service';
   styleUrl: './login.css'
 })
 export class Login {
-  /**
-   * Controls which form is visible.
-   * true  => Register
-   * false => Login
-   */
+ 
   constructor(private router: Router, private auth: AuthService){}
-  @Input() registerMode = false;
+  registerMode = false;
 
-  // Simple demo models. Replace with your FormGroup or API bindings.
-  registerModel = new FormGroup( {
-    name: new FormControl(''),
-    contact: new FormControl(''),
-    email: new FormControl(''),
-    password: new FormControl(''),
-    tnc: new FormControl(false, [Validators.requiredTrue]),
-  });
+  
+registerModel = new FormGroup({
+  name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+  contact: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.pattern(/^\d{10}$/)] }),
+  email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
+  password: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(6)] }),
+  tnc: new FormControl(false, { nonNullable: true, validators: [Validators.requiredTrue] }),
+});
 
-  loginModel = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl(''),
-  });
+
+  
+loginModel = new FormGroup({
+  email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
+  password: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+});
+
 
   toggleMode(): void {
     this.registerMode = !this.registerMode;
   }
 
   onRegisterSubmit(): void {
-    // TODO: integrate with your API
     console.log('Register submit', this.registerModel);
   }
 

@@ -25,16 +25,16 @@ export interface NextRenewal {
 }
 
 export interface Offer {
-  title: string;          // e.g., "Safe Driver Discount"
-  chip: string;           // e.g., "Save 10%" / "Flat credit"
-  description: string;    // main line
-  conditions: string;     // muted line
+  title: string;        
+  chip: string;           
+  description: string;    
+  conditions: string;    
 }
 
 export interface DashboardCustomer {
   nextRenewal: NextRenewal;
   policies: Policy[];
-  offers: Offer[];        // ✅ add offers to the dashboard payload
+  offers: Offer[];       
 }
 
 @Injectable({ providedIn: 'root' })
@@ -102,17 +102,14 @@ export class CustomerService {
     ]
   };
 
-  /** Dashboard (mimics API latency) */
   getDashboard(): Observable<DashboardCustomer> {
     return of(this.mock);
   }
 
-  /** Convenience: policies list */
   getPolicies(): Observable<Policy[]> {
     return of(this.mock.policies);
   }
 
-  /** Convenience: next renewal block */
   getNextRenewal(): Observable<NextRenewal> {
     return of(this.mock.nextRenewal);
   }

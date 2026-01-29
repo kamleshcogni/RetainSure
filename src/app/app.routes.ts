@@ -9,6 +9,7 @@ import { RoleGuard } from './core/auth/role.guard';
 import { AdminPlolicyList } from './features/admin/admin-plolicy-list/admin-plolicy-list';
 import { CustomerDashboard } from './features/customer/customer-dashboard/customer-dashboard';
 import { CustomerSettings } from './features/customer/customer-settings/customer-settings';
+import { LoggedOutGuard } from './core/auth/logged-out.guard';
 
 export const routes: Routes = [
     {path: 'admin/dashboard', component:AdminDashboard, canActivate: [RoleGuard], data: {roles: ['admin']}},
@@ -19,24 +20,27 @@ export const routes: Routes = [
 
      {
     path: 'admin/policies/all',
+    canActivate: [RoleGuard],
     component: AdminPlolicyList,
-    data: { policyType: 'All' }
+    data: { policyType: 'All', roles: ['admin'] }
   },
   {
     path: 'admin/policies/motor',
+    canActivate: [RoleGuard],
     component: AdminPlolicyList,
-    data: { policyType: 'Motor' }
+    data: { policyType: 'Motor', roles: ['admin'] }
   },
   {
     path: 'admin/policies/health',
+    canActivate: [RoleGuard],
     component: AdminPlolicyList,
-    data: { policyType: 'Health' }
+    data: { policyType: 'Health', roles: ['admin'] }
   },
-  {path: 'customer/dashboard', component: CustomerDashboard, data: {roles: ['customer']}},
-  {path: 'customer/settings', component: CustomerSettings, data: {roles: ['customer']}},
+  {path: 'customer/dashboard', component: CustomerDashboard, canActivate: [RoleGuard], data: {roles: ['customer']}},
+  {path: 'customer/settings', component: CustomerSettings, canActivate: [RoleGuard], data: {roles: ['customer']}},
 
 
 
     
-    {path: '', component:Login},
+    {path: '', component:Login, canActivate: [LoggedOutGuard]},
 ];

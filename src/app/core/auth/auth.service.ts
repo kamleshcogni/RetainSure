@@ -7,7 +7,7 @@ export type Role = 'admin' | 'customer';
 
 export interface User {
   email: string;
-  password: string; // mock only; don't store plaintext in production
+  password: string;
   role: Role;
   name?: string;
 }
@@ -26,13 +26,10 @@ export class AuthService {
     { email: 'shree@example.com',   password: 'password', role: 'customer', name: 'Shree'   },
   ];
 
-  /** Is this running in a browser (has window & DOM)? */
   private readonly isBrowser: boolean;
 
-  /** Subject for current user */
   private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
 
-  /** Observable streams */
   readonly currentUser$ = this.currentUserSubject.asObservable();
   readonly isLoggedIn$ = this.currentUser$.pipe(
     map(u => !!u),
@@ -42,7 +39,6 @@ export class AuthService {
   constructor(@Inject(PLATFORM_ID) platformId: Object) {
     this.isBrowser = isPlatformBrowser(platformId);
 
-    // Initialize from storage ONLY in browser
     if (this.isBrowser) {
       const stored = this.readStoredUser();
       if (stored) {
@@ -51,19 +47,18 @@ export class AuthService {
     }
   }
 
-  /** --- Auth operations --- */
 
   login(email: string, password: string): User | null {
     const user = this.users.find(u => u.email === email && u.password === password) ?? null;
     if (user) {
-      this.persistUser(user);         // safe in browser, no-op on server
+      this.persistUser(user);         
       this.currentUserSubject.next(user);
     }
     return user;
   }
 
   logout(): void {
-    this.clearStoredUser();           // safe in browser, no-op on server
+    this.clearStoredUser();           
     this.currentUserSubject.next(null);
   }
 
@@ -97,44 +92,40 @@ export class AuthService {
     }
   }
 
-  /** --- Storage helpers: safely wrap localStorage --- */
 
   private readStoredUser(): User | null {
-    if (!this.isBrowser) return null; // SSR: no storage
+    if (!this.isBrowser) return null;
     try {
       const raw = globalThis?.localStorage?.getItem(AuthService.STORAGE_KEY);
       return raw ? (JSON.parse(raw) as User) : null;
     } catch {
-      // if JSON corrupt or localStorage not available
       this.clearStoredUser();
       return null;
     }
   }
 
   private persistUser(user: User): void {
-    if (!this.isBrowser) return; // SSR: no storage
+    if (!this.isBrowser) return;
     try {
-      // Ensure localStorage API exists & is a function
       if (typeof globalThis?.localStorage?.setItem === 'function') {
         globalThis.localStorage.setItem(AuthService.STORAGE_KEY, JSON.stringify(user));
       }
     } catch {
-      // swallow on server or storage failures
+      
     }
   }
 
   private clearStoredUser(): void {
-    if (!this.isBrowser) return; // SSR: no storage
+    if (!this.isBrowser) return; 
     try {
       if (typeof globalThis?.localStorage?.removeItem === 'function') {
         globalThis.localStorage.removeItem(AuthService.STORAGE_KEY);
       }
     } catch {
-      // swallow on server or storage failures
+     
     }
   }
 
-  /** For backward compatibility if you still call this elsewhere */
   getStoredUser(): User | null {
     return this.readStoredUser();
   }

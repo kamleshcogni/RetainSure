@@ -3,7 +3,6 @@
 
 <div class="container content top-space">
 
-    <!-- Title row -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
       <div>
         <h4 class="mb-0 fw-bold">My Dashboard</h4>
@@ -16,9 +15,9 @@
   <div class="d-flex align-items-start gap-2">
     <i class="bi bi-calendar-event fs-5 mt-2" style=" color: #3a71cb;"></i>
     <div class="ms-2">
-      <!-- First line -->
+
       <div class="fw-semibold" style="font-size: medium; color: #3a71cb;">Next renewal due</div>
-      <!-- Second line -->
+
        
       <div class="muted" style="font-size: small; color: #3a71cb;">
         {{data?.nextRenewal?.product}} • {{data?.nextRenewal?.policyNumber}} • Renewal on 
@@ -28,7 +27,6 @@
     </div>
   </div>
 
-  <!-- Button aligned to right -->
   <button class="btn ms-auto" style=" background-color: #3a71cb; color: white; font-size: small;">
     <i class="bi bi-arrow-repeat me-1"></i>Renew Now
   </button>
@@ -36,25 +34,19 @@
 
 
     <div class="row g-3 pb-5">
-      <!-- Left: Policies -->
-      
 
 
-<!-- Guard: render only when data is available -->
 <div *ngIf="data as d" class="col-12 col-lg-4">
   <div class="card">
     <div class="card-body">
-      <!-- Header -->
       <div class="d-flex justify-content-between align-items-center mb-2">
         <h5 class="card-title mb-0" style="font-size: large;">My Policies</h5>
         <span class="text-secondary" style="font-size: small;">{{ d.policies.length }} policies</span>
       </div>
       <div class="text-secondary mb-3" style="font-size: small;">Select a policy to view details.</div>
 
-      <!-- List container with consistent spacing -->
       <div class="d-flex flex-column gap-2">
 
-        <!-- Item -->
         <div class="border rounded-3 p-3"
              *ngFor="let p of d.policies"
              (click)="selectPolicy(p)"
@@ -63,7 +55,6 @@
              [style.background-color]="selectedPolicy?.policyNumber === p.policyNumber ? '#f0f8ff' : '#ffffff'">
 
           <div class="d-flex justify-content-between align-items-start">
-            <!-- Left: title + renewal/expired -->
             <div>
               <div class="fw-semibold" style="font-size: medium;">
                 {{ p.name }}
@@ -73,7 +64,6 @@
               </div>
 
 
-              <!-- Renewal/Expired line -->
               <div class="text-secondary" style="font-size: small;" *ngIf="p.status === 'ACTIVE'">
                 Renewal: {{ formatDate(p.renewalDate) }}
               </div>
@@ -82,7 +72,6 @@
               </div>
             </div>
 
-            <!-- Right: badge (top) + premium (bottom), right-aligned -->
             <div class="d-flex flex-column align-items-end">
               <span class="badge"
                     [ngClass]="{
@@ -99,7 +88,6 @@
           </div>
 
         </div>
-        <!-- /Item -->
 
       </div>
     </div>
@@ -109,12 +97,10 @@
 
 
 
-      <!-- Middle: Policy details -->
       
 <div *ngIf="selectedPolicy as sp" class="col-12 col-lg-4">
   <div class="card">
     <div class="card-body">
-      <!-- Header -->
       <div class="d-flex justify-content-between align-items-start mb-2">
         <div>
           <h5 class="card-title mb-1">Policy Details</h5>
@@ -122,7 +108,6 @@
         </div>
       </div>
 
-      <!-- Details grid -->
       <div class="row details-grid g-3 mb-2">
         <div class="col-6">
           <div class="label fw-semibold">Status</div>
@@ -156,12 +141,10 @@
         </div>
       </div>
 
-      <!-- Notes -->
       <div class="mb-3 bg-light rounded-3 p-2">
         <div class="muted text-secondary" style="font-size: smaller;">{{ sp.notes }}</div>
       </div>
 
-      <!-- CTA + Support -->
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="muted text-secondary" style="font-size: small;">Need help? Contact support for policy changes.</div>
         <button class="btn btn-outline-secondary btn-sm">
@@ -169,7 +152,6 @@
         </button>
       </div>
 
-      <!-- Steps -->
       <div class="mb-3 bg-light rounded-3 p-2">
         <div class="label mb-1 fw-semibold">Renewal steps</div>
         <div class="step-box text-secondary mb-2" style="font-size: smaller;">
@@ -189,7 +171,6 @@
 </div>
 
 
-      <!-- Right: Retention offers -->
       
 <div *ngIf="data as d" class="col-12 col-lg-4">
   <div class="card">
