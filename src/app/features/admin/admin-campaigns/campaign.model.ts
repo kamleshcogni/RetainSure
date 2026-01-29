@@ -1,5 +1,4 @@
 
-// src/app/shared/campaigns/campaign.model.ts
 export type Status = 'ACTIVE' | 'SCHEDULED' | 'COMPLETED';
 
 export interface Campaign {
@@ -14,7 +13,6 @@ export interface Campaign {
   created_at: string;       // ISO
   modified_at: string;      // ISO
 
-  // Optional extras (keep if you still want Overview metrics & prior table values)
   segmentSize?: number;
   conversions?: number;
   conversionRate?: number;
