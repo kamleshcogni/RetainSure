@@ -1,9 +1,8 @@
-
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { AuthService, User } from '../../../core/auth/auth.service';
+import { Router } from '@angular/router';
+import { AuthService, SessionUser } from '../../../core/auth/auth.service';
 import { Navbar } from '../../../shared/navbar/navbar';
 
 @Component({
@@ -11,11 +10,11 @@ import { Navbar } from '../../../shared/navbar/navbar';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, Navbar],
   templateUrl: './customer-settings.html',
-  styleUrls: ['./customer-settings.css'], // ✅ plural
+  styleUrls: ['./customer-settings.css'],
 })
 export class CustomerSettings implements OnInit {
   saved = signal(false);
-  currentUser: User | null = null;
+  currentUser: SessionUser | null = null;
   form!: FormGroup;
 
   constructor(
@@ -23,7 +22,6 @@ export class CustomerSettings implements OnInit {
     private auth: AuthService,
     private router: Router
   ) {
-    // Initialize after DI
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(80)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(120)]],
@@ -42,7 +40,6 @@ export class CustomerSettings implements OnInit {
     });
   }
 
-  /** Helper so template can safely access controls with strict type checking */
   ctrl(path: string) {
     return this.form.get(path);
   }

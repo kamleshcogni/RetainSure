@@ -6,7 +6,7 @@ import { Login } from './login/login';
   selector: 'app-root',
   imports: [RouterOutlet, Login],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
 export class App {
   protected readonly title = signal('frontend');

@@ -1,8 +1,23 @@
-import { BootstrapContext, bootstrapApplication } from '@angular/platform-browser';
+import { bootstrapApplication, type BootstrapContext } from '@angular/platform-browser';
 import { App } from './app/app';
-import { config } from './app/app.config.server';
+import { provideRouter } from '@angular/router';
+import { routes } from './app/app.routes';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 
-const bootstrap = (context: BootstrapContext) =>
-    bootstrapApplication(App, config, context);
+// (Optional, but good practice for SSR utilities)
+// import { provideServerRendering } from '@angular/platform-server';
 
-export default bootstrap;
+const serverConfig = {
+  providers: [
+    provideRouter(routes),
+    // Use fetch on the server too
+    provideHttpClient(withFetch()),
+    // provideServerRendering(),
+  ],
+};
+
+// 👇 Export a function that takes BootstrapContext and forwards it to bootstrapApplication
+export default function bootstrap(context: BootstrapContext) {
+  return bootstrapApplication(App, serverConfig, context);
+}
+``

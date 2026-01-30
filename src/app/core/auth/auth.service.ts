@@ -1,132 +1,96 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, map, Observable, throwError } from 'rxjs';
+import { TokenService, UiRole } from './token.service';
 
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { BehaviorSubject, map, distinctUntilChanged } from 'rxjs';
+export interface AuthResponse {
+  accessToken: string;
+  tokenType: string;
+  expiresInMs: number;
+}
 
-export type Role = 'admin' | 'customer';
-
-export interface User {
+export interface LoginRequest {
   email: string;
   password: string;
-  role: Role;
+}
+
+export interface RegisterRequest {
+  fullName: string;
+  email: string;
+  password: string;
+  contactNumber: string;
+}
+
+export interface SessionUser {
+  email: string;
+  role: UiRole; 
   name?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private static readonly STORAGE_KEY = 'auth_user';
+  updateProfile(arg0: { name: any; email: any; }) {
+    throw new Error('Method not implemented.');
+  }
+  private readonly base = "http://localhost:8080";
 
-  /** Mock users (hardcoded) */
-  private readonly users: User[] = [
-    { email: 'kamlesh@example.com', password: 'password', role: 'admin',    name: 'Kamlesh' },
-    { email: 'logesh@example.com',  password: 'password', role: 'admin',    name: 'Logesh'  },
-    { email: 'hari@example.com',    password: 'password', role: 'customer', name: 'Hari'    },
-    { email: 'sejal@example.com',   password: 'password', role: 'customer', name: 'Sejal'   },
-    { email: 'sruthi@example.com',  password: 'password', role: 'customer', name: 'Sruthi'  },
-    { email: 'shree@example.com',   password: 'password', role: 'customer', name: 'Shree'   },
-  ];
-
-  private readonly isBrowser: boolean;
-
-  private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
-
+  private readonly currentUserSubject = new BehaviorSubject<SessionUser | null>(null);
   readonly currentUser$ = this.currentUserSubject.asObservable();
-  readonly isLoggedIn$ = this.currentUser$.pipe(
-    map(u => !!u),
-    distinctUntilChanged()
-  );
 
-  constructor(@Inject(PLATFORM_ID) platformId: Object) {
-    this.isBrowser = isPlatformBrowser(platformId);
-
-    if (this.isBrowser) {
-      const stored = this.readStoredUser();
-      if (stored) {
-        this.currentUserSubject.next(stored);
-      }
+  constructor(private http: HttpClient, private tokens: TokenService) {
+    // Rehydrate session from localStorage on app load
+    const email = this.tokens.getEmail();
+    const role = this.tokens.getRole();
+    if (email && role) {
+      this.currentUserSubject.next({ email, role });
     }
   }
 
+  login(email: string, password: string): Observable<SessionUser> {
+    const body: LoginRequest = { email, password };
+    
+    return this.http.post<AuthResponse>(`${this.base}/api/auth/login`, body).pipe(
+      map((res) => {
+        // 1. Save the token first
+        this.tokens.save(res.accessToken);
 
-  login(email: string, password: string): User | null {
-    const user = this.users.find(u => u.email === email && u.password === password) ?? null;
-    if (user) {
-      this.persistUser(user);         
-      this.currentUserSubject.next(user);
-    }
-    return user;
+        // 2. Try to extract data from the newly saved token
+        const role = this.tokens.getRole();
+        const userEmail = this.tokens.getEmail();
+
+        // DEBUG: If your redirect isn't working, check these logs in the browser!
+        console.log('Token saved. Extracted Role:', role);
+        console.log('Token saved. Extracted Email:', userEmail);
+
+        if (!role || !userEmail) {
+          // If this happens, your TokenService isn't parsing the JWT claims correctly
+          throw new Error('Login successful but Token claims (role/email) are missing.');
+        }
+
+        const session: SessionUser = { email: userEmail, role: role as UiRole };
+        
+        // 3. Update the app state
+        this.currentUserSubject.next(session);
+        
+        return session;
+      })
+    );
   }
+
+  register(req: RegisterRequest): Observable<any> {
+  return this.http.post(`${this.base}/api/auth/register`, req);
+}
 
   logout(): void {
-    this.clearStoredUser();           
+    this.tokens.clear();
     this.currentUserSubject.next(null);
   }
 
-  getCurrentUser(): User | null {
+  getCurrentUser(): SessionUser | null {
     return this.currentUserSubject.value;
   }
 
   isLoggedIn(): boolean {
-    return !!this.currentUserSubject.value;
-  }
-
-  hasRole(roles: Role[]): boolean {
-    const u = this.currentUserSubject.value;
-    return !!u && roles.includes(u.role);
-  }
-
-  updateProfile(patch: Partial<Pick<User, 'name' | 'email'>>): void {
-    const u = this.currentUserSubject.value;
-    if (!u) return;
-    const updated: User = { ...u, ...patch };
-    this.persistUser(updated);
-    this.currentUserSubject.next(updated);
-  }
-
-  setUser(user: User | null): void {
-    if (user) {
-      this.persistUser(user);
-      this.currentUserSubject.next(user);
-    } else {
-      this.logout();
-    }
-  }
-
-
-  private readStoredUser(): User | null {
-    if (!this.isBrowser) return null;
-    try {
-      const raw = globalThis?.localStorage?.getItem(AuthService.STORAGE_KEY);
-      return raw ? (JSON.parse(raw) as User) : null;
-    } catch {
-      this.clearStoredUser();
-      return null;
-    }
-  }
-
-  private persistUser(user: User): void {
-    if (!this.isBrowser) return;
-    try {
-      if (typeof globalThis?.localStorage?.setItem === 'function') {
-        globalThis.localStorage.setItem(AuthService.STORAGE_KEY, JSON.stringify(user));
-      }
-    } catch {
-      
-    }
-  }
-
-  private clearStoredUser(): void {
-    if (!this.isBrowser) return; 
-    try {
-      if (typeof globalThis?.localStorage?.removeItem === 'function') {
-        globalThis.localStorage.removeItem(AuthService.STORAGE_KEY);
-      }
-    } catch {
-     
-    }
-  }
-
-  getStoredUser(): User | null {
-    return this.readStoredUser();
+    return !!this.currentUserSubject.value && !this.tokens.isExpired();
   }
 }

@@ -1,5 +1,6 @@
-<section class="bg-light min-vh-100 ">
-    <app-navbar></app-navbar>
+<section class="bg-light min-vh-100">
+  <app-navbar></app-navbar>
+
   <div class="px-4 py-5 content d-flex vh-100 align-items-center px-md-5 text-center text-lg-start">
     <div class="container">
       <div class="row gx-lg-5 align-items-center">
@@ -9,125 +10,87 @@
             <span class="" style="color: #3a71cb;">Policy Renewal</span>
           </h1>
           <p class="text-secondary">
-            RetainSure leverages AI and historical data to identify customers at risk of churn. Access real-time scores, manage targeted campaigns, and maimize your policy renewal rate.
+            RetainSure leverages AI and historical data to identify customers at risk of churn. Access real-time scores, manage targeted campaigns, and maximize your policy renewal rate.
           </p>
-
-          
         </div>
 
         <div class="col-lg-6 mb-5 mb-lg-0">
           <div class="card border-0 bg-white ms-5 w-75 mt-5 shadow">
             <div class="card-body py-5 px-md-5">
-
+              <!-- Register -->
               <form *ngIf="registerMode" (ngSubmit)="onRegisterSubmit()" class="needs-validation small text-secondary" [formGroup]="registerModel">
-              
                 <h5 class="mb-4 text-center">Create your account</h5>
 
                 <div class="row">
                   <div class="col-md-6 mb-3">
-                    <label for="regName" class="form-label">Name</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      formControlName="name"
-                      required
-                    />
-                    <div class="invalid-feedback">Please enter your name.</div>
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" formControlName="name" required />
                   </div>
 
                   <div class="col-md-6 mb-3">
-                    <label for="regContact" class="form-label">Contact No.</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      formControlName="contact"
-                      required
-                    />
+                    <label class="form-label">Contact No.</label>
+                    <input type="text" class="form-control" formControlName="contact" required />
+                    <div class="invalid-feedback d-block" *ngIf="registerModel.get('contact')?.invalid && registerModel.get('contact')?.touched">
+                      Contact must be exactly 10 digits.
+                    </div>
                   </div>
                 </div>
 
                 <div class="mb-3">
-                  <label for="regEmail" class="form-label">Email address</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    formControlName="email"
-                    required
-                  />
-                  <div class="invalid-feedback">Please enter a valid email.</div>
+                  <label class="form-label">Email address</label>
+                  <input type="email" class="form-control" formControlName="email" required />
                 </div>
 
                 <div class="mb-3">
-                  <label for="regPassword" class="form-label">Password</label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    formControlName="password"
-                    required
-                    minlength="6"
-                  />
-                  <div class="invalid-feedback">Password must be at least 6 characters.</div>
+                  <label class="form-label">Password</label>
+                  <input type="password" class="form-control" formControlName="password" required minlength="6" />
                 </div>
 
                 <div class="form-check d-flex justify-content-start mb-3">
-                  <input
-                    class="form-check-input me-2"
-                    type="checkbox"
-                    formControlName="tnc"
-                  />
-                  <label class="form-check-label" for="regTNC">
-                    Agree to our Terms and Conditions.
-                  </label>
+                  <input class="form-check-input me-2" type="checkbox" formControlName="tnc" />
+                  <label class="form-check-label">Agree to our Terms and Conditions.</label>
                 </div>
-                
+
                 <div class="invalid-feedback d-block" *ngIf="registerModel.get('tnc')?.invalid && registerModel.get('tnc')?.touched">
                   You must agree to the Terms and Conditions.
                 </div>
-                <button type="submit" class="btn fw-medium py-2 btn-submit text-sm text-white w-100" [disabled]="registerModel.invalid">
+
+                <div class="text-danger small mb-2" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+                <button type="submit" class="btn fw-medium py-2 btn-submit text-sm text-white w-100" [disabled]="registerModel.invalid" style="background-color:#3a71cb">
                   SIGN UP
                 </button>
+
                 <div class="text-center mt-3">
                   <button type="button" class="btn toggle-btn btn-link p-0" (click)="toggleMode()">
-                    {{ registerMode ? 'Already have an account? Login' : "Don't have an account? Register" }}
+                    Already have an account? Login
                   </button>
                 </div>
               </form>
 
+              <!-- Login -->
               <form *ngIf="!registerMode" (ngSubmit)="onLoginSubmit()" class="needs-validation small text-secondary" [formGroup]="loginModel">
-                
                 <h5 class="mb-4 text-center">Welcome back!</h5>
 
                 <div class="mb-3">
-                  <label for="loginEmail" class="form-label">Email address</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    formControlName="email"
-                    required
-                  />
-                  <div class="invalid-feedback">Please enter a valid email.</div>
+                  <label class="form-label">Email address</label>
+                  <input type="email" class="form-control" formControlName="email" required />
                 </div>
 
                 <div class="mb-4">
-                  <label for="loginPassword" class="form-label">Password</label>
-                  <input
-                    type="password"
-                    id="loginPassword"
-                    class="form-control"
-                    formControlName="password"
-                    name="loginPassword"
-                    required
-                  />
-                  <div class="invalid-feedback">Please enter your password.</div>
+                  <label class="form-label">Password</label>
+                  <input type="password" class="form-control" formControlName="password" required />
                 </div>
 
-                <button type="submit" class="btn btn-submit py-2 fw-medium text-white w-100"  style="background-color: #3a71cb;" [disabled]="loginModel.invalid">
+                <div class="text-danger small mb-2" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+                <button type="submit" class="btn btn-submit py-2 fw-medium text-white w-100" [disabled]="loginModel.invalid" style="background-color:#3a71cb">
                   LOGIN
                 </button>
 
                 <div class="text-center mt-3">
                   <button type="button" class="btn toggle-btn btn-link p-0" (click)="toggleMode()">
-                    {{ registerMode ? 'Already have an account? Login' : "Don't have an account? Register" }}
+                    Don't have an account? Register
                   </button>
                 </div>
               </form>
@@ -135,6 +98,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>

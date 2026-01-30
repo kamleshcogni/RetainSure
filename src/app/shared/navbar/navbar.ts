@@ -1,16 +1,15 @@
-
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, NavigationEnd } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
-import { AuthService, User } from '../../core/auth/auth.service';
+import { AuthService, SessionUser } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css',
+  styleUrls: ['./navbar.css'],
 })
 export class Navbar implements OnInit, OnDestroy {
   isOnSettingsPage = false;
@@ -19,10 +18,8 @@ export class Navbar implements OnInit, OnDestroy {
   constructor(public auth: AuthService, private router: Router) {}
 
   ngOnInit(): void {
-    // Initialize based on current URL
     this.isOnSettingsPage = this.router.url.startsWith('/customer/settings');
 
-    // Update on route changes
     this.navSub = this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe((e: NavigationEnd) => {
@@ -39,18 +36,18 @@ export class Navbar implements OnInit, OnDestroy {
   }
 
   goDashboard() {
-    this.router.navigate(['/customer/dashboard']); // adjust if your dashboard route differs
+    this.router.navigate(['/customer/dashboard']);
   }
 
   logout() {
     this.auth.logout();
-    this.router.navigate(['/']); // back to landing
+    this.router.navigate(['/']);
   }
 
-  avatarInitials(user: User | null): string {
+  avatarInitials(user: SessionUser | null): string {
     const name = user?.name ?? '';
     const parts = name.trim().split(/\s+/);
-    const initials = parts.slice(0, 2).map(p => p[0]?.toUpperCase() ?? '').join('');
+    const initials = parts.slice(0, 2).map((p: string) => p[0]?.toUpperCase() ?? '').join('');
     return initials || (user?.email?.[0]?.toUpperCase() ?? '');
   }
 }

@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
 import { AuthService } from './auth.service';
@@ -8,16 +7,12 @@ export class LoggedOutGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) {}
 
   canActivate(): boolean | UrlTree {
-    const isLoggedIn = this.auth.isLoggedIn();
-
-    if (!isLoggedIn) {
-      return true;
+    if (this.auth.isLoggedIn()) {
+      // Route by role
+      const user = this.auth.getCurrentUser();
+      if (user?.role === 'admin') return this.router.createUrlTree(['/admin/dashboard']);
+      if (user?.role === 'customer') return this.router.createUrlTree(['/customer/dashboard']);
     }
-
-    const user = this.auth.getCurrentUser();
-    const target =
-      user?.role === 'admin' ? '/admin/dashboard' : '/customer/dashboard';
-
-    return this.router.createUrlTree([target]);
+    return true;
   }
 }
