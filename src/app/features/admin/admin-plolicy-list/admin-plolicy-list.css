@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #4361ee;
+  --bg-body: #f8f9fa;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-body);
+}
+
+/* Page Layout */
+.page-wrapper {
+  background-color: var(--bg-body);
+  min-height: 100vh;
+}
+
+/* Modern Card Styling */
+.card {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Table Enhancements */
+.table thead th {
+  background-color: #ffffff;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  color: #6c757d;
+  padding: 1.25rem 1rem;
+  border-top: none;
+}
+
+.table tbody td {
+  padding: 1rem;
+  color: #495057;
+}
+
+/* Status Badges */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Inputs & Forms */
+.form-control, .form-select {
+  border: 1px solid #e0e4e8;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+}
+
+/* Buttons */
+/* .btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background-color: #3751d8;
+  transform: translateY(-1px);
+} */
+
+/* Custom Modal Animation */
+.custom-modal-container {
+  z-index: 1050;
+  position: relative;
+}
+
+.modal-content {
+  border-radius: 20px;
+  animation: modalSlideUp 0.3s ease-out;
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.status-pill {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.status-pill.active {
+  background: #e6fcf5;
+  color: #0ca678;
+}
+.status-pill.expired {
+  background: #fff5f5;
+  color: #fa5252;
+}
+
+.table thead th {
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #868e96;
+  border-bottom-width: 1px;
+}
+
+.card {
+  transition: transform 0.2s ease;
+}
+
+.breadcrumb-item a {
+  text-decoration: none;
+  color: #4361ee;
+}

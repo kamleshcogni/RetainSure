@@ -1,0 +1,27 @@
+/* Custom subtle background for the whole page */
+body {
+  background-color: #f8f9fa;
+}
+
+/* Enhancing the card shadow and border */
+.card {
+  border-radius: 15px;
+  overflow: hidden; /* Ensures header/footer follow border radius */
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.list-group-item {
+  border-color: #f1f1f1;
+}
+
+/* Customizing the font weight for labels */
+.fw-semibold {
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}

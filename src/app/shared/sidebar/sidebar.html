@@ -1,0 +1,59 @@
+<div class="d-flex flex-column flex-shrink-0 vh-100 p-3 bg-light position-fixed top-0 start-0" style="width: 280px;">
+  
+    
+<a routerLink="/" class="d-flex align-items-center mx-auto mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+  <img src="/just-logo.png" alt="logo" height="48">
+  <span class=" ms-3 fs-4 fw-bold" style="color: #3a71cb; font-size: xx-large;">RetainSure</span>
+</a>
+
+    <hr>
+    <ul class="nav nav-pills text-secondary flex-column mb-auto">
+      <li class="nav-item">
+        <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link fw-semibold link" aria-current="page">
+          <i class="bi bi-speedometer2 me-2"></i>
+          Dashboard
+        </a>
+      </li>
+      <li>
+        <a routerLink="/admin/risk" class="nav-link fw-semibold link">
+          <i class="bi bi-shield-exclamation me-2"></i>
+          Risk Management
+        </a>
+      </li>
+      <li>
+        <a routerLink="/admin/engage" class="nav-link fw-semibold link">
+          <i class="bi bi-chat-left me-2"></i>
+          Engagement
+        </a>
+      </li>
+      <li>
+        <a routerLink="/admin/campaigns" class="nav-link fw-semibold link">
+          <i class="bi bi-megaphone me-2"></i>
+          Campaigns
+        </a>
+      </li>
+      <li>
+        <a routerLink="/admin/analytics" class="nav-link fw-semibold link">
+          <i class="bi bi-bar-chart me-2"></i>
+          Analytics
+        </a>
+      </li>
+    </ul>
+    <hr>
+    
+
+
+<div class="text-secondary">
+  <button
+    type="button"
+    class="nav-link py-2 rounded fw-semibold link btn btn-outline-danger w-100 text-start"
+    (click)="logout()"
+  >
+    <i class="bi bi-box-arrow-right me-2 ms-3"></i>
+    Logout
+  </button>
+</div>
+
+
+
+  </div>

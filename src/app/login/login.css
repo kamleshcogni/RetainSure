@@ -1,0 +1,29 @@
+.btn-submit{
+    background-color: #3a71cb;
+    font-size: smaller;
+}
+.btn-submit:hover{
+    background-color: #2b569c;
+}
+.form-check-input {
+  border-color: #3a71cb;
+}
+.form-check-input:checked {
+  background-color: #3a71cb;
+  border-color: #3a71cb;
+}
+.form.form-check-input:focus {
+  box-shadow: 0 0 0 .25rem rgba(58, 113, 203, 0.25);
+  border-color: #3a71cb;
+}
+.toggle-btn{
+    color: #3a71cb;
+}
+.toggle-btn:hover{
+    color: #2b569c;
+}
+@media (max-width: 992px){
+  .content{
+    margin-top: 260px;
+  }
+}

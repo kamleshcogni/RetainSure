@@ -1,0 +1,235 @@
+<div class="bg-light">
+  <app-navbar></app-navbar>
+ 
+  <div class="container content top-space" *ngIf="dashboardData$ | async as data; else loading">
+ 
+    <!-- Title row -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+      <div>
+        <h4 class="mb-0 fw-bold">My Dashboard</h4>
+        <div class="muted text-secondary" style="font-size: medium;">
+          View your policies, renew on time, and unlock retention offers.
+        </div>
+      </div>
+    </div>
+ 
+    <!-- Dynamic Reminders from DB -->
+    <div
+      *ngFor="let rem of data?.reminders"
+      class="info-banner mb-3 d-flex align-items-center p-2 rounded-3 justify-content-between"
+      style="background-color: #fff8e1; border-left: 4px solid #f9a825;"
+    >
+      <div class="d-flex align-items-start gap-2">
+        <i class="bi bi-bell fs-5 mt-2" style="color: #f9a825;"></i>
+        <div class="ms-2">
+          <div class="fw-semibold" style="font-size: medium; color: #6d4c00;">
+            Reminder
+            <span
+              class="badge bg-secondary ms-2"
+              style="font-size: x-small;"
+              *ngIf="rem.category"
+            >{{ rem.category }}</span>
+          </div>
+          <div class="muted" style="font-size: small; color: #6d4c00;">
+            {{ rem.message }}
+            <span class="text-secondary ms-2" style="font-size: x-small;">
+              Received: {{ formatDate(rem.sentDate) }}
+            </span>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Renew button aligned to right -->
+      <button
+        class="btn ms-auto"
+        style="background-color: #f9a825; color: #6d4c00; font-size: small;"
+        (click)="respondToReminder(rem)"
+      >
+        <i class="bi bi-arrow-repeat me-1"></i>Renew
+      </button>
+    </div>
+ 
+    <!-- Next renewal banner -->
+    <div
+      class="info-banner mb-3 d-flex align-items-center p-2 rounded-3 justify-content-between"
+      style="background-color: #f0f8ff;"
+    >
+      <div class="d-flex align-items-start gap-2">
+        <i class="bi bi-calendar-event fs-5 mt-2" style=" color: #3a71cb;"></i>
+        <div class="ms-2">
+          <div class="fw-semibold" style="font-size: medium; color: #3a71cb;">Next renewal due</div>
+          <div class="muted" style="font-size: small; color: #3a71cb;">
+            {{ data?.nextRenewal?.product }} • {{ data?.nextRenewal?.policyNumber }} • Renewal on
+            <span class="fw-semibold">{{ data?.nextRenewal?.renewalDate | date:'dd MMM yyyy' }}</span>
+            <span class="badge bg-danger ms-2">{{ data?.nextRenewal?.status }}</span>
+          </div>
+        </div>
+      </div>
+ 
+      <button class="btn ms-auto" style=" background-color: #3a71cb; color: white; font-size: small;">
+        <i class="bi bi-arrow-repeat me-1"></i>Renew Now
+      </button>
+    </div>
+ 
+    <div class="row g-3 pb-5">
+      <!-- Left: Policies -->
+      <div class="col-12 col-lg-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="card-title mb-0" style="font-size: large;">My Policies</h5>
+              <span class="text-secondary" style="font-size: small;">{{ data?.policies?.length || 0 }} policies</span>
+            </div>
+            <div class="text-secondary mb-3" style="font-size: small;">Select a policy to view details.</div>
+ 
+            <div class="d-flex flex-column gap-2">
+              <div
+                class="border rounded-3 p-3"
+                *ngFor="let p of data?.policies"
+                (click)="selectPolicy(p)"
+                [class.clickable]="true"
+                [class.active]="selectedPolicy?.policyNumber === p.policyNumber"
+                [style.background-color]="selectedPolicy?.policyNumber === p.policyNumber ? '#f0f8ff' : '#ffffff'"
+              >
+                <div class="d-flex justify-content-between align-items-start">
+                  <div>
+                    <div class="fw-semibold" style="font-size: medium;">{{ p.name }}</div>
+                    <div class="fw-semibold" style="font-size: medium;">{{ p.policyNumber }}</div>
+                    <div class="text-secondary" style="font-size: small;" *ngIf="p.status === 'ACTIVE'">
+                      Renewal: {{ formatDate(p.renewalDate) }}
+                    </div>
+                    <div class="text-secondary" style="font-size: small;" *ngIf="p.status === 'EXPIRED'">
+                      Expired: {{ formatDate(p.expiredOn) }}
+                    </div>
+                  </div>
+                  <div class="d-flex flex-column align-items-end">
+                    <span
+                      class="badge"
+                      [ngClass]="{
+                        'text-success border border-success-subtle bg-success-subtle': p.status === 'ACTIVE',
+                        'text-danger border border-danger-subtle bg-danger-subtle': p.status === 'EXPIRED'
+                      }"
+                    >{{ p.status }}</span>
+                    <p class="text-secondary mt-1" style="font-size: x-small;">
+                      Premium: {{ formatMoney(p.premium) }} / {{ p.status === 'ACTIVE' ? 'trip' : 'year' }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Middle: Policy details -->
+      <div class="col-12 col-lg-4" *ngIf="selectedPolicy as sp">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <h5 class="card-title mb-1">Policy Details</h5>
+                <div class="muted text-secondary" style="font-size: small;">
+                  {{ sp.name }} • {{ sp.policyNumber }}
+                </div>
+              </div>
+            </div>
+ 
+            <div class="row details-grid g-3 mb-2">
+              <div class="col-6">
+                <div class="label fw-semibold">Status</div>
+                <div class="value text-secondary" style="font-size: smaller;">
+                  {{ sp.status === 'ACTIVE' ? 'Active' : 'Expired' }}
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="label fw-semibold">Coverage</div>
+                <div class="value text-secondary" style="font-size: smaller;">{{ sp.coverage }}</div>
+              </div>
+              <div class="col-6">
+                <div class="label fw-semibold">Insured Value</div>
+                <div class="value text-secondary" style="font-size: smaller;">{{ sp.insuredValue | number }}</div>
+              </div>
+              <div class="col-6" *ngIf="sp.status === 'ACTIVE'">
+                <div class="label fw-semibold">Renewal Date</div>
+                <div class="value text-secondary" style="font-size: smaller;">{{ formatDate(sp.renewalDate) }}</div>
+              </div>
+              <div class="col-6" *ngIf="sp.status === 'EXPIRED'">
+                <div class="label fw-semibold">Expired Date</div>
+                <div class="value text-secondary" style="font-size: smaller;">{{ formatDate(sp.expiredOn) }}</div>
+              </div>
+              <div class="col-6">
+                <div class="label fw-semibold">Premium</div>
+                <div class="value text-secondary" style="font-size: smaller;">
+                  {{ formatMoney(sp.premium) }} / {{ sp.status === 'ACTIVE' ? 'trip' : 'year' }}
+                </div>
+              </div>
+            </div>
+ 
+            <div class="mb-3 bg-light rounded-3 p-2">
+              <div class="muted text-secondary" style="font-size: smaller;">{{ sp.notes }}</div>
+            </div>
+ 
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div class="muted text-secondary" style="font-size: small;">
+                Need help? Contact support for policy changes.
+              </div>
+              <button class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-chat-dots me-1"></i>Contact Support
+              </button>
+            </div>
+ 
+            <div class="mb-3 bg-light rounded-3 p-2">
+              <div class="label mb-1 fw-semibold">Renewal steps</div>
+              <div class="step-box text-secondary mb-2" style="font-size: smaller;">
+                <ol class="mb-0">
+                  <li>Review coverage and premium details.</li>
+                  <li>Confirm contact and payment information.</li>
+                  <li>Make secure payment to complete renewal.</li>
+                </ol>
+              </div>
+              <button
+                class="btn toggle-btn text-white"
+                [disabled]="sp.status === 'EXPIRED'"
+                [class.disabled]="sp.status === 'EXPIRED'"
+              >
+                <i class="bi bi-play-circle me-1"></i>Start Renewal
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+ 
+      <!-- Right: Retention offers -->
+      <div class="col-12 col-lg-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title mb-2">Retention Offers</h5>
+            <div class="muted mb-3 text-secondary" style="font-size: small;">
+              Personalized discounts for your next renewal.
+            </div>
+            <div class="offer-item border rounded-3 p-2" *ngFor="let o of data?.offers">
+              <div class="d-flex justify-content-between align-items-center">
+                <h6 class="mb-1">{{ o.title }}</h6>
+                <span class="offer-chip fw-semibold py-1 px-2 rounded-pill bg-warning" style="font-size: smaller;">
+                  {{ o.chip }}
+                </span>
+              </div>
+              <p class="text-secondary" style="font-size: smaller; margin-bottom: 0px;">{{ o.conditions }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+  </div>
+ 
+  <ng-template #loading>
+    <div class="container content top-space">
+      <div class="d-flex justify-content-center align-items-center" style="height: 60vh;">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

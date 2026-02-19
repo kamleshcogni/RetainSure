@@ -1,0 +1,49 @@
+<section class="bg-light min-vh-100">
+  <app-navbar></app-navbar>
+
+  <div class="px-4 py-5 content d-flex vh-100 align-items-center px-md-5 text-center text-lg-start">
+    <div class="container">
+      <div class="row gx-lg-5 align-items-center">
+        <div class="col-lg-6 mt-sm-5 mb-5 mb-lg-0">
+          <h1 class="my-5 display-5 text-secondary fw-bold lh-1">
+            The Power to Predict <br />
+            <span class="" style="color: #3a71cb;">Policy Renewal</span>
+          </h1>
+          <p class="text-secondary">
+            RetainSure leverages AI and historical data to identify customers at risk of churn.
+            Access real-time scores, manage targeted campaigns, and maximize your policy renewal rate.
+          </p>
+        </div>
+
+        <div class="col-lg-6 mb-5 mb-lg-0">
+          <div class="card border-0 bg-white ms-5 w-75 mt-5 shadow">
+            <div class="card-body py-5 px-md-5">
+              <!-- Login -->
+              <form (ngSubmit)="onLoginSubmit()" class="needs-validation small text-secondary" [formGroup]="loginModel">
+                <h5 class="mb-4 text-center">Welcome back!</h5>
+
+                <div class="mb-3">
+                  <label class="form-label">Username</label>
+                  <input type="text" class="form-control" formControlName="username" required />
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label">Password</label>
+                  <input type="password" class="form-control" formControlName="password" required />
+                </div>
+
+                <div class="text-danger small mb-2" *ngIf="errorMsg">{{ errorMsg }}</div>
+
+                <button type="submit" class="btn btn-submit py-2 fw-medium text-white w-100" [disabled]="loginModel.invalid" style="background-color:#3a71cb">
+                  LOGIN
+                </button>
+              </form>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

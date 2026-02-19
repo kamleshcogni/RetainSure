@@ -1,0 +1,16 @@
+.nav-link:active{
+    background-color: #3a71cb;
+}
+.nav-link:hover,
+.nav-link:focus {
+  background-color: #3a71cb;  
+  color: white;         
+}
+.link{
+    text-decoration: none;
+    color: inherit;
+}
+.link:hover{
+    color: white;
+}
+
