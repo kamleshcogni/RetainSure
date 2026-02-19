@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { BehaviorSubject, switchMap } from 'rxjs';
 
 import { Sidebar } from '../../../shared/sidebar/sidebar';
-import { Campaigns } from './campaigns'; 
+import { Campaigns } from './campaigns';
 import { Campaign, Status } from './campaign.model';
 
 @Component({
@@ -35,13 +35,13 @@ export class AdminCampaigns implements OnInit {
 
   ngOnInit(): void {
     this.segments = this.svc.getSegments();
-    
+
     // Reactive Data Loading Pipeline
     this.refreshSignal$.pipe(
       switchMap(() => this.svc.list())
     ).subscribe({
       next: (rows) => {
-        this.campaigns = [...rows]; 
+        this.campaigns = [...rows];
         this.recomputeMetrics();
         this.setDefaultSegment();
         console.log(this.campaigns);
@@ -175,10 +175,10 @@ export class AdminCampaigns implements OnInit {
   }
 
   statusClass(s: Status): string {
-    const classes: Record<string, string> = { 
-      ACTIVE: 'chip-active', 
-      SCHEDULED: 'chip-scheduled', 
-      COMPLETED: 'chip-completed' 
+    const classes: Record<string, string> = {
+      ACTIVE: 'chip-active',
+      SCHEDULED: 'chip-scheduled',
+      COMPLETED: 'chip-completed'
     };
     return classes[s] || '';
   }

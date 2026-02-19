@@ -23,9 +23,11 @@ export class Campaigns {
   private readonly apiUrl = `${environment.apiUrl}/api/campaigns`;
 
   private readonly segments: string[] = [
-    'HIGH',
-    'MEDIUM',
-    'LOW',
+    'High Risk, High Value',
+    'High Risk, Mixed Value',
+    'Medium Risk, High Value',
+    'Medium Risk, Medium Value',
+    'Low Risk, High Value',
   ];
 
   getSegments(): string[] {
