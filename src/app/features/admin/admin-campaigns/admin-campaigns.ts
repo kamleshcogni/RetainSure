@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, switchMap } from 'rxjs';
 
 import { Sidebar } from '../../../shared/sidebar/sidebar';
@@ -10,7 +10,7 @@ import { Campaign, Status } from './campaign.model';
 @Component({
   selector: 'app-admin-campaigns',
   standalone: true,
-  imports: [Sidebar, CommonModule, ReactiveFormsModule],
+  imports: [Sidebar, CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './admin-campaigns.html',
   styleUrl: './admin-campaigns.css',
 })
@@ -18,7 +18,6 @@ export class AdminCampaigns implements OnInit {
   private fb = inject(FormBuilder);
   private svc = inject(Campaigns);
 
-  // Trigger for refreshing data
   private refreshSignal$ = new BehaviorSubject<void>(undefined);
 
   form!: FormGroup;
@@ -29,6 +28,58 @@ export class AdminCampaigns implements OnInit {
   segments: string[] = [];
   metrics = { activeCampaigns: 0, avgConversionRate: 0, avgROI: 0 };
 
+  // ── Pagination ──
+  pageSize = 5;
+  currentPage = 1;
+
+  get totalItems(): number {
+    return this.campaigns.length;
+  }
+
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.totalItems / this.pageSize));
+  }
+
+  get pagedCampaigns(): Campaign[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.campaigns.slice(start, start + this.pageSize);
+  }
+
+  /** Map page-local index → absolute index in campaigns[] */
+  toAbsoluteIndex(pageIndex: number): number {
+    return (this.currentPage - 1) * this.pageSize + pageIndex;
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = Math.min(Math.max(1, page), this.totalPages);
+    // collapse details if the row is no longer on this page
+    if (this.expandedIndex != null) {
+      const start = (this.currentPage - 1) * this.pageSize;
+      const end = start + this.pageSize - 1;
+      if (this.expandedIndex < start || this.expandedIndex > end) {
+        this.expandedIndex = null;
+      }
+    }
+  }
+
+  nextPage(): void { this.goToPage(this.currentPage + 1); }
+  prevPage(): void { this.goToPage(this.currentPage - 1); }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.goToPage(1);
+  }
+
+  /** Keep currentPage in bounds after list length changes */
+  private ensureValidPage(): void {
+    if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
+    if (this.currentPage < 1) this.currentPage = 1;
+  }
+
+  // ── Helpers for template (Angular templates can't call Math directly) ──
+  mathMin(a: number, b: number): number { return Math.min(a, b); }
+
+  // ── Lifecycle ──
   constructor() {
     this.initForm();
   }
@@ -36,15 +87,18 @@ export class AdminCampaigns implements OnInit {
   ngOnInit(): void {
     this.segments = this.svc.getSegments();
 
+<<<<<<< HEAD
     // Reactive Data Loading Pipeline
+=======
+>>>>>>> b3ccdb8 (pagination)
     this.refreshSignal$.pipe(
       switchMap(() => this.svc.list())
     ).subscribe({
       next: (rows) => {
         this.campaigns = [...rows];
         this.recomputeMetrics();
+        this.ensureValidPage();
         this.setDefaultSegment();
-        console.log(this.campaigns);
       },
       error: (err) => console.error('Failed to load campaigns:', err)
     });
@@ -61,7 +115,6 @@ export class AdminCampaigns implements OnInit {
     });
   }
 
-  /** Centralized refresh method */
   private refreshData(): void {
     this.refreshSignal$.next();
   }
@@ -72,36 +125,42 @@ export class AdminCampaigns implements OnInit {
     }
   }
 
-  /** Create → Save Draft */
+  // ── Create → Save Draft (dynamic update) ──
   saveDraft(): void {
     if (this.form.invalid || this.isEditing()) {
       this.form.markAllAsTouched();
       return;
     }
     this.svc.createDraft(this.form.value).subscribe({
-      next: () => {
+      next: (created) => {
+        this.campaigns = [created, ...this.campaigns];
+        this.recomputeMetrics();
+        this.goToPage(1);          // show the new item on page 1
         this.resetForm();
-        this.refreshData();
-      }
+      },
+      error: (err) => console.error('Draft create failed:', err),
     });
   }
 
-  /** Create → Launch */
+  // ── Create → Launch (dynamic update) ──
   launchCampaign(): void {
     if (this.form.invalid || this.isEditing()) {
       this.form.markAllAsTouched();
       return;
     }
     this.svc.launch(this.form.value).subscribe({
-      next: () => {
+      next: (created) => {
+        this.campaigns = [created, ...this.campaigns];
+        this.recomputeMetrics();
+        this.goToPage(1);
         this.resetForm();
-        this.refreshData();
-        alert("Campaign launched and notifications queued.");
-      }
+        alert('Campaign launched and notifications queued.');
+      },
+      error: (err) => console.error('Launch failed:', err),
     });
   }
 
-  /** Edit → Update row */
+  // ── Edit → Update row (dynamic update) ──
   saveUpdate(): void {
     if (!this.isEditing() || this.form.invalid) {
       this.form.markAllAsTouched();
@@ -120,15 +179,18 @@ export class AdminCampaigns implements OnInit {
     };
 
     this.svc.update(existing.campaign_id!, changes).subscribe({
-      next: () => {
+      next: (updated) => {
+        const idx = this.editingIndex!;
+        this.campaigns = this.campaigns.map((c, i) => (i === idx ? updated : c));
+        this.recomputeMetrics();
+        this.ensureValidPage();
         this.resetForm();
-        this.refreshData();
-      }
+      },
+      error: (err) => console.error('Update failed:', err),
     });
   }
 
-  // --- UI & Helper Methods ---
-
+  // ── UI helpers ──
   editCampaign(index: number): void {
     const c = this.campaigns[index];
     this.editingIndex = index;
@@ -143,7 +205,7 @@ export class AdminCampaigns implements OnInit {
     });
 
     setTimeout(() => {
-      document.querySelector('.rs-create')?.scrollIntoView({ behavior: 'smooth' });
+      document.querySelector('.card')?.scrollIntoView({ behavior: 'smooth' });
     }, 0);
   }
 

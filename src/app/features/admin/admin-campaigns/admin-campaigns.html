@@ -54,6 +54,7 @@
           <div class="row g-2 g-md-3">
             <div class="col-12">
               <label class="form-label text-secondary small mb-1">Campaign Name</label>
+<<<<<<< HEAD
               <input
                 class="form-control form-control-sm"
                 type="text"
@@ -61,18 +62,29 @@
                 placeholder="e.g., Q4 Customer Appreciation"
               />
               <div class="text-danger small mt-1" *ngIf="form.controls['name'].touched && form.controls['name'].invalid">
+=======
+              <input class="form-control form-control-sm" type="text" formControlName="name"
+                     placeholder="e.g., Q4 Customer Appreciation" />
+              <div class="text-danger small mt-1"
+                   *ngIf="form.controls['name'].touched && form.controls['name'].invalid">
+>>>>>>> b3ccdb8 (pagination)
                 Name is required (min 3 characters)
               </div>
             </div>
 
             <div class="col-12">
               <label class="form-label text-secondary small mb-1">Discount</label>
+<<<<<<< HEAD
               <input
                 class="form-control form-control-sm"
                 type="text"
                 formControlName="offerDetails"
                 placeholder="10% Discount on Renewal"
               />
+=======
+              <input class="form-control form-control-sm" type="text" formControlName="offerDetails"
+                     placeholder="10% Discount on Renewal" />
+>>>>>>> b3ccdb8 (pagination)
             </div>
 
             <div class="col-6 col-md-4">
@@ -116,12 +128,20 @@
       </div>
     </section>
 
+<<<<<<< HEAD
     <!-- BAND C: Campaigns Table -->
+=======
+    <!-- BAND C: Campaigns Table + Pagination -->
+>>>>>>> b3ccdb8 (pagination)
     <section class="card shadow-sm border-0 rounded-3 mb-3 mb-md-4">
       <div class="card-body p-2 p-sm-3 p-md-4">
         <h3 class="fw-semibold text-dark fs-6 mb-3">Campaigns</h3>
 
+<<<<<<< HEAD
         <!-- Desktop Table -->
+=======
+        <!-- ════════════ Desktop Table ════════════ -->
+>>>>>>> b3ccdb8 (pagination)
         <div class="d-none d-md-block table-responsive">
           <table class="table table-hover table-sm align-middle mb-0">
             <thead class="table-light">
@@ -137,7 +157,11 @@
               </tr>
             </thead>
             <tbody>
+<<<<<<< HEAD
               <ng-container *ngFor="let c of campaigns; let i = index">
+=======
+              <ng-container *ngFor="let c of pagedCampaigns; let i = index">
+>>>>>>> b3ccdb8 (pagination)
                 <tr>
                   <td class="fw-semibold">{{ c.campaign_code }}</td>
                   <td class="fw-semibold">{{ c.campaign_name }}</td>
@@ -156,6 +180,7 @@
                   <td class="text-nowrap">{{ c.start_date ? toInputDate(c.start_date) : '-' }}</td>
                   <td class="text-nowrap">{{ c.end_date ? toInputDate(c.end_date) : '-' }}</td>
                   <td class="text-nowrap">
+<<<<<<< HEAD
                     <button
                       type="button"
                       class="btn btn-outline-secondary btn-sm me-1"
@@ -168,17 +193,36 @@
                       class="btn btn-outline-secondary btn-sm"
                       (click)="detailsbutton(i)">
                       {{ expandedIndex === i ? 'Hide' : 'Details' }}
+=======
+                    <button type="button" class="btn btn-outline-secondary btn-sm me-1"
+                            *ngIf="c.status !== 'COMPLETED'"
+                            (click)="editCampaign(toAbsoluteIndex(i))">
+                      Edit
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                            (click)="detailsbutton(toAbsoluteIndex(i))">
+                      {{ expandedIndex === toAbsoluteIndex(i) ? 'Hide' : 'Details' }}
+>>>>>>> b3ccdb8 (pagination)
                     </button>
                   </td>
                 </tr>
 
                 <!-- Desktop Details Row -->
+<<<<<<< HEAD
                 <tr *ngIf="expandedIndex === i">
+=======
+                <tr *ngIf="expandedIndex === toAbsoluteIndex(i)">
+>>>>>>> b3ccdb8 (pagination)
                   <td colspan="8" class="p-0 border-0">
                     <div class="p-3 bg-light border-top">
                       <div class="d-flex align-items-center justify-content-between mb-2">
                         <span class="fw-semibold small">Details · {{ c.campaign_code }} — {{ c.campaign_name }}</span>
+<<<<<<< HEAD
                         <button type="button" class="btn btn-outline-secondary btn-sm" (click)="detailsbutton(i)">Close</button>
+=======
+                        <button type="button" class="btn btn-outline-secondary btn-sm"
+                                (click)="detailsbutton(toAbsoluteIndex(i))">Close</button>
+>>>>>>> b3ccdb8 (pagination)
                       </div>
                       <div class="row g-3">
                         <div class="col-md-4">
@@ -188,9 +232,13 @@
                               'bg-success': c.status === 'ACTIVE',
                               'bg-warning text-dark': c.status === 'SCHEDULED',
                               'bg-primary': c.status === 'COMPLETED'
+<<<<<<< HEAD
                             }">
                             {{ c.status }}
                           </span>
+=======
+                            }">{{ c.status }}</span>
+>>>>>>> b3ccdb8 (pagination)
                         </div>
                         <div class="col-md-4">
                           <div class="text-muted small">Target Segment</div>
@@ -241,9 +289,15 @@
           </table>
         </div>
 
+<<<<<<< HEAD
         <!-- Mobile Cards -->
         <div class="d-md-none">
           <div *ngFor="let c of campaigns; let i = index" class="border rounded-3 p-2 mb-2 bg-white">
+=======
+        <!-- ════════════ Mobile Cards ════════════ -->
+        <div class="d-md-none">
+          <div *ngFor="let c of pagedCampaigns; let i = index" class="border rounded-3 p-2 mb-2 bg-white">
+>>>>>>> b3ccdb8 (pagination)
             <div class="d-flex justify-content-between align-items-center mb-1">
               <span class="small">
                 <span class="fw-semibold">{{ c.campaign_code }}</span>
@@ -254,9 +308,13 @@
                   'bg-success': c.status === 'ACTIVE',
                   'bg-warning text-dark': c.status === 'SCHEDULED',
                   'bg-primary': c.status === 'COMPLETED'
+<<<<<<< HEAD
                 }">
                 {{ c.status }}
               </span>
+=======
+                }">{{ c.status }}</span>
+>>>>>>> b3ccdb8 (pagination)
             </div>
             <div class="d-flex flex-wrap gap-2 small text-muted mb-1">
               <span>Target: {{ c.target }}</span>
@@ -268,6 +326,7 @@
               <span>{{ c.end_date ? toInputDate(c.end_date) : '-' }}</span>
             </div>
             <div class="d-flex gap-2">
+<<<<<<< HEAD
               <button
                 type="button"
                 class="btn btn-outline-secondary btn-sm"
@@ -285,6 +344,19 @@
 
             <!-- Mobile Details Expansion -->
             <div *ngIf="expandedIndex === i" class="mt-2 p-2 bg-light rounded-3 border-top">
+=======
+              <button type="button" class="btn btn-outline-secondary btn-sm"
+                      *ngIf="c.status !== 'COMPLETED'"
+                      (click)="editCampaign(toAbsoluteIndex(i))">Edit</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm"
+                      (click)="detailsbutton(toAbsoluteIndex(i))">
+                {{ expandedIndex === toAbsoluteIndex(i) ? 'Hide' : 'Details' }}
+              </button>
+            </div>
+
+            <!-- Mobile Details -->
+            <div *ngIf="expandedIndex === toAbsoluteIndex(i)" class="mt-2 p-2 bg-light rounded-3 border-top">
+>>>>>>> b3ccdb8 (pagination)
               <div class="fw-semibold small mb-2">Details · {{ c.campaign_code }}</div>
               <div class="row g-2">
                 <div class="col-6">
@@ -294,9 +366,13 @@
                       'bg-success': c.status === 'ACTIVE',
                       'bg-warning text-dark': c.status === 'SCHEDULED',
                       'bg-primary': c.status === 'COMPLETED'
+<<<<<<< HEAD
                     }">
                     {{ c.status }}
                   </span>
+=======
+                    }">{{ c.status }}</span>
+>>>>>>> b3ccdb8 (pagination)
                 </div>
                 <div class="col-6">
                   <div class="text-muted small">Target</div>
@@ -339,11 +415,57 @@
                   <div class="small">{{ c.roi }}%</div>
                 </div>
               </div>
+<<<<<<< HEAD
               <button type="button" class="btn btn-outline-secondary btn-sm mt-2 w-100" (click)="detailsbutton(i)">Close</button>
+=======
+              <button type="button" class="btn btn-outline-secondary btn-sm mt-2 w-100"
+                      (click)="detailsbutton(toAbsoluteIndex(i))">Close</button>
+>>>>>>> b3ccdb8 (pagination)
             </div>
           </div>
         </div>
 
+<<<<<<< HEAD
+=======
+        <!-- ════════════ Pagination Controls ════════════ -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-3 pt-3 border-top"
+             *ngIf="totalItems > 0">
+
+          <!-- Left: summary -->
+          <div class="small text-muted">
+            Showing
+            {{ (currentPage - 1) * pageSize + 1 }}–{{ mathMin(currentPage * pageSize, totalItems) }}
+            of {{ totalItems }}
+          </div>
+
+          <!-- Right: controls -->
+          <div class="d-flex align-items-center gap-2">
+            <label class="small text-muted mb-0 d-none d-sm-inline">Rows:</label>
+            <select class="form-select form-select-sm page-size-select"
+                    [ngModel]="pageSize"
+                    (ngModelChange)="onPageSizeChange($event)">
+              <option [ngValue]="5">5</option>
+              <option [ngValue]="10">10</option>
+              <option [ngValue]="20">20</option>
+            </select>
+
+            <button class="btn btn-outline-secondary btn-sm"
+                    (click)="prevPage()" [disabled]="currentPage <= 1">
+              <span aria-hidden="true">&laquo;</span> Prev
+            </button>
+
+            <span class="small text-muted text-nowrap">
+              {{ currentPage }} / {{ totalPages }}
+            </span>
+
+            <button class="btn btn-outline-secondary btn-sm"
+                    (click)="nextPage()" [disabled]="currentPage >= totalPages">
+              Next <span aria-hidden="true">&raquo;</span>
+            </button>
+          </div>
+        </div>
+
+>>>>>>> b3ccdb8 (pagination)
       </div>
     </section>
 
