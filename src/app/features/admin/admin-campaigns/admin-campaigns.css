@@ -1,4 +1,17 @@
-/* ── Page Layout (matches Admin Reminders pattern) ── */
+/* Main container */
+.rs-page {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 77vw;
+  height: 100vh;
+  background-color: white;
+  overflow-y: auto;
+  z-index: 1000;
+  font-size: 0.9rem;
+}
+
+/* ── Page Layout ── */
 .page-content {
   margin-left: 280px;
   padding: 32px 24px;
@@ -24,4 +37,67 @@
 .btn-close-sm {
   font-size: 0.5rem;
   padding: 0.15rem;
+}
+
+/* Bands */
+.blue-band {
+  padding: 1.5rem 0;
+}
+
+/* Titles */
+.container-title {
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+/* Metrics */
+.table-like .cell .metric-label {
+  color: #6c757d;
+}
+.table-like .cell .metric-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+/* Chips */
+.rs-chip {
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  display: inline-block;
+}
+.chip-active { background: #e6ffed; color: #0a7a2c; }
+.chip-scheduled { background: #fff9e6; color: #996d00; }
+.chip-completed { background: #eef2ff; color: #3f51b5; }
+
+/* Form Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1rem;
+}
+.field.span-2 { grid-column: span 2; }
+.rs-error {
+  color: #d9534f;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+.actions { margin-top: 0.75rem; }
+.edit-badge {
+  font-size: 0.85rem;
+  color: #0d6efd;
+}
+.update {
+  background-color: #3a71cb;
+  color: white;
+  border: none;
+}
+.update:hover {
+  background-color: #2b569c;
+}
+
+
+/* ── Pagination ── */
+.page-size-select {
+  width: 72px;
 }
